@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meet The Casters - Grand Finals</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Teko:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --main-green: #0FF796;
+            --gold-color: #FFD700;
+            --main-red: #FD023B;
+        }
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Russo One', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .font-teko { font-family: 'Teko', sans-serif; }
+        .background-video-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2;
+        }
+        #bg-video {
+            width: 100%; height: 100%; object-fit: cover;
+            filter: blur(5px) brightness(0.3);
+        }
+        main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 0;
+        }
+
+        /* Header & Footer Styling */
+        .page-header, .page-footer { width: 100%; flex-shrink: 0; z-index: 10; }
+        .page-header { position: relative; height: 80px; display: flex; align-items: center; }
+        .header-background {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(10, 10, 10, 0.6); backdrop-filter: blur(8px);
+            clip-path: polygon(0 0, 100% 0, 100% 75%, 97% 100%, 3% 100%, 0 75%);
+            border-bottom: 2px solid var(--main-green);
+        }
+        .header-content { position: relative; width: 100%; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .event-info { display: flex; align-items: center; gap: 1rem; }
+        .event-logo { height: 45px; }
+        .event-title-group { line-height: 1; }
+        .event-title { font-family: 'Teko', sans-serif; font-size: 2.2rem; letter-spacing: 1px; }
+        .event-year { color: var(--main-green); font-size: 1.2rem; font-weight: 700; letter-spacing: 2px; }
+        .header-details { text-align: right; }
+        .live-indicator { color: var(--main-red); font-weight: bold; animation: pulse 1.5s infinite; }
+        .page-footer { padding: 0.5rem 0; background-color: var(--main-green); overflow: hidden; white-space: nowrap; }
+        .marquee { display: inline-block; animation: marquee 25s linear infinite; text-transform: uppercase; }
+        .marquee span { margin: 0 2rem; }
+
+        /* Caster Page Styling */
+        .page-title {
+            font-family: 'Teko', sans-serif;
+            font-size: 3rem;
+            letter-spacing: 4px;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: text-fade-in 1s ease 0.2s forwards;
+        }
+        .casters-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end; /* Align to bottom for varied heights */
+            gap: 2rem;
+        }
+        .caster-card {
+            position: relative;
+            width: 320px;
+            height: 450px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: card-fade-in 0.8s ease-out forwards;
+        }
+        .caster-card.center {
+            width: 360px;
+            height: 500px;
+        }
+        .caster-photo-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+        }
+        .caster-photo {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 95%;
+            filter: drop-shadow(0 0 20px rgba(0,0,0,0.8));
+            opacity: 0;
+            animation: photo-fade-in 1s ease-out 1s forwards;
+        }
+        .caster-bg-shape {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 80%;
+            background: linear-gradient(45deg, rgba(30,30,30,0.4), rgba(50,50,50,0.2));
+            border: 1px solid rgba(255,255,255,0.1);
+            clip-path: polygon(0 15%, 100% 0, 100% 85%, 0 100%);
+            transform: scale(0.8);
+            opacity: 0;
+            animation: shape-pop-in 0.8s cubic-bezier(0.5, 1.5, 0.5, 1) 0.5s forwards;
+        }
+        .caster-info {
+            position: absolute;
+            bottom: 20px;
+            left: -20px;
+            background: rgba(10,10,10,0.7);
+            backdrop-filter: blur(5px);
+            padding: 0.75rem 1.5rem;
+            border-left: 5px solid var(--main-green);
+            clip-path: polygon(0 0, 100% 0, 95% 100%, 0% 100%);
+            opacity: 0;
+            transform: translateX(-30px);
+            animation: info-slide-in 0.8s ease-out 1.2s forwards;
+        }
+        .caster-card.center .caster-info {
+            border-left-color: var(--gold-color);
+        }
+        .caster-name {
+            font-family: 'Teko', sans-serif;
+            font-size: 2.5rem;
+            line-height: 1;
+            text-transform: uppercase;
+        }
+        .caster-role {
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--main-green);
+        }
+        .caster-card.center .caster-role {
+            color: var(--gold-color);
+        }
+        .caster-social {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        /* Animations */
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+        @keyframes marquee { from { transform: translateX(0%); } to { transform: translateX(-50%); } }
+        @keyframes text-fade-in { to { opacity: 1; } }
+        @keyframes card-fade-in { to { opacity: 1; transform: translateY(0); } }
+        @keyframes shape-pop-in { to { opacity: 1; transform: scale(1); } }
+        @keyframes photo-fade-in { to { opacity: 1; } }
+        @keyframes info-slide-in { to { opacity: 1; transform: translateX(0); } }
+
+    </style>
+</head>
+<body>
+    <div class="background-video-container">
+        <video id="bg-video" autoplay loop muted playsinline>
+            <source src="/hud/delta-force-v1/assets/videos/bg.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <header class="page-header">
+        <div class="header-background"></div>
+        <div class="header-content">
+            <div class="event-info"><img src="https://www.studentsportcompany.com/wp-content/uploads/2022/05/BUEC.png" alt="Event Logo" class="event-logo"><div class="event-title-group"><div class="event-title">GRAND FINALS</div><div class="event-year">2025</div></div></div>
+            <div class="header-details"><div class="live-indicator">● LIVE</div><div id="current-date" class="text-sm"></div></div>
+        </div>
+    </header>
+
+    <main>
+        <h1 class="page-title">MEET YOUR CASTERS</h1>
+        <div class="casters-container">
+            <div class="caster-card" style="animation-delay: 0.4s;">
+                <div class="caster-photo-container">
+                    <div class="caster-bg-shape"></div>
+                    <img src="https://cdn.fifa.gg/cache/media/player/6f6c3b59-7394-4b86-8a96-45fcb5667fac/Image-of-player-Emerickson77-player-6f6c3b59-7394-4b86-8a96-45fcb5667fac.png?" alt="Caster 1 Photo" class="caster-photo">
+                </div>
+                <div class="caster-info">
+                    <h2 class="caster-name">John 'BLAZE' Doe</h2>
+                    <p class="caster-role">ANALYST</p>
+                    <p class="caster-social">@JohnBlaze</p>
+                </div>
+            </div>
+
+            <div class="caster-card center" style="animation-delay: 0.2s;">
+                <div class="caster-photo-container">
+                    <div class="caster-bg-shape"></div>
+                    <img src="https://static.gosugamers.net/48/97/61/1dfb13c9cecbe7f2da992f7fdf35adcde250871ef697ac289730157505.png" alt="Caster 2 Photo" class="caster-photo">
+                </div>
+                <div class="caster-info">
+                    <h2 class="caster-name">Alex 'HOST' Ray</h2>
+                    <p class="caster-role">HOST</p>
+                    <p class="caster-social">@AlexRayHost</p>
+                </div>
+            </div>
+
+            <div class="caster-card" style="animation-delay: 0.6s;">
+                <div class="caster-photo-container">
+                    <div class="caster-bg-shape"></div>
+                    <img src="https://esportsawards.com/wp-content/uploads/2022/05/Bruno-Clash-01.png" alt="Caster 3 Photo" class="caster-photo">
+                </div>
+                <div class="caster-info">
+                    <h2 class="caster-name">Jane 'VIXEN' Roe</h2>
+                    <p class="caster-role">CASTER</p>
+                    <p class="caster-social">@VixenCasts</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer class="page-footer animate-on-load" style="animation-name: slideInUp;">
+        <div class="marquee">
+            <span>• DJARUM SUPER •</span><span>• AGRES.ID •</span><span>• SLEDGEHAMMER •</span><span>• SOCKET PRO •</span><span>• CANNON GAMING •</span><span>• OXYGEN2 •</span>
+            <span>• DJARUM SUPER •</span><span>• AGRES.ID •</span><span>• SLEDGEHAMMER •</span><span>• SOCKET PRO •</span><span>• CANNON GAMING •</span><span>• OXYGEN2 •</span>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('current-date').textContent = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+        });
+    </script>
+</body>
+</html>

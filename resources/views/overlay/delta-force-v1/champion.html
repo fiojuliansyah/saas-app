@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DELTA - THE CHAMPIONS!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Teko:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --main-green: #0FF796;
+            --gold-color: #FFD700;
+        }
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Russo-One', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .font-teko { font-family: 'Teko', sans-serif; }
+        .background-video-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2;
+        }
+        #bg-video {
+            width: 100%; height: 100%; object-fit: cover;
+            filter: blur(5px) brightness(0.3);
+        }
+        main {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* ✨ UI Pojok Baru ✨ */
+        .corner-ui {
+            position: fixed;
+            width: 250px;
+            height: 100px;
+            z-index: 10;
+            opacity: 0;
+            animation: fade-in 1s ease 2.5s forwards;
+        }
+        .corner-ui::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 10, 0.5);
+            backdrop-filter: blur(5px);
+        }
+        /* Top Left */
+        .top-left { top: 2rem; left: 2rem; }
+        .top-left::before { clip-path: polygon(0 0, 100% 0, 100% 50%, 20% 100%, 0 100%); }
+        /* Top Right */
+        .top-right { top: 2rem; right: 2rem; text-align: right; }
+        .top-right::before { clip-path: polygon(0 0, 100% 0, 100% 100%, 80% 100%, 0 50%); }
+        /* Bottom Left */
+        .bottom-left { bottom: 2rem; left: 2rem; }
+        .bottom-left::before { clip-path: polygon(0 0, 20% 0, 100% 50%, 100% 100%, 0 100%); }
+         /* Bottom Right */
+        .bottom-right { bottom: 2rem; right: 2rem; text-align: right; }
+        .bottom-right::before { clip-path: polygon(80% 0, 100% 0, 100% 100%, 0 100%, 0 50%); }
+
+        .corner-content { position: relative; padding: 1rem; }
+        .corner-logo { height: 40px; }
+        .corner-title { font-family: 'Teko', sans-serif; font-size: 1.5rem; line-height: 1; }
+        .corner-subtitle { font-size: 0.8rem; letter-spacing: 1px; color: var(--main-green); }
+        .sponsor-logos { display: flex; gap: 1rem; align-items: center; }
+        .sponsor-logos img { height: 25px; opacity: 0.8; filter: brightness(0) invert(1); }
+
+
+        /* Champion Scene Styling */
+        .champion-scene {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 200px;
+        }
+        .trophy {
+            position: absolute;
+            height: 90%; /* Diperbesar */
+            max-height: 600px;
+            z-index: 2;
+            filter: drop-shadow(0 0 40px var(--gold-color));
+            opacity: 0;
+            transform: scale(1.2);
+            animation: reveal 1.5s cubic-bezier(0.2, 1, 0.3, 1) 0.5s forwards;
+        }
+        .champion-logo {
+            position: absolute;
+            width: 400px; /* Diperbesar */
+            z-index: 3;
+            margin-top: -180px;
+            margin-bottom: 300px;
+            opacity: 0;
+            animation: reveal 1s ease-out 1.5s forwards;
+        }
+        .champion-title {
+            position: absolute;
+            z-index: 4;
+            font-family: 'Teko', sans-serif;
+            font-size: 9rem; /* Diperbesar */
+            letter-spacing: 0.5rem;
+            color: #fff;
+            text-shadow: 0 0 25px var(--gold-color);
+            margin-top: 120px;
+        }
+        .champion-title span {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(-50px);
+            animation: slam-letter 0.8s cubic-bezier(0.5, 1.8, 0.5, 1) forwards;
+        }
+        
+        /* Light Rays Effect */
+        .light-rays {
+            position: absolute;
+            width: 100%;
+            height: 300%;
+            top: 50%;
+            left: 50%;
+            background: conic-gradient(from 0deg, transparent, white, transparent);
+            opacity: 0;
+            animation: rotate-rays 10s linear infinite, reveal-rays 2s ease-out 0.5s forwards;
+            mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, black 30%, transparent 60%);
+        }
+        
+        /* Confetti */
+        .confetti-container { position: absolute; inset: 0; overflow: hidden; z-index: 5; }
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 20px;
+            background-color: var(--gold-color);
+            opacity: 0;
+            animation: fall 5s linear forwards;
+        }
+        .confetti.silver { background-color: #C0C0C0; }
+
+        /* Animations */
+        @keyframes reveal { to { opacity: 1; transform: scale(1); } }
+        @keyframes reveal-rays { to { opacity: 0.1; } }
+        @keyframes rotate-rays { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+        @keyframes slam-letter { to { opacity: 1; transform: translateY(0); } }
+        @keyframes fall {
+            from { top: -20px; opacity: 1; transform: rotate(0deg); }
+            to { top: 100vh; opacity: 0; transform: rotate(720deg); }
+        }
+        @keyframes fade-in { to { opacity: 1; } }
+
+    </style>
+</head>
+<body>
+    <div class="background-video-container">
+        <video id="bg-video" autoplay loop muted playsinline>
+            <source src="/hud/delta-force-v1/assets/videos/bg.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <div class="corner-ui top-left">
+        <div class="corner-content">
+             <img src="/hud/delta-force-v1/assets/scrim.png" alt="Event Logo" class="corner-logo">
+        </div>
+    </div>
+    <div class="corner-ui top-right">
+        <div class="corner-content">
+            <div class="corner-title">SCRIM BATTLE</div>
+            <div class="corner-subtitle">27 Juli 2025</div>
+        </div>
+    </div>
+    <div class="corner-ui bottom-left">
+        <div class="corner-content">
+            <div class="sponsor-logos">
+                <img src="/hud/delta-force-v1/assets/gihud.png">
+                <!-- <img src="https://agres.id/artikel/wp-content/uploads/2022/02/Agres.Id-Hitam.png"> -->
+            </div>
+        </div>
+    </div>
+     <div class="corner-ui bottom-right">
+        <div class="corner-content">
+            <div class="corner-title">DELTA FORCE</div>
+            <div class="corner-subtitle">GARENA</div>
+        </div>
+    </div>
+
+
+    <main>
+        <div class="champion-scene">
+            <div class="light-rays"></div>
+            
+            <img src="https://i.imgur.com/L44e3g3.png" alt="Trophy" class="trophy">
+            <img src="/hud/delta-force-v1/assets/teams/sqdg.png" alt="Champion Logo" class="champion-logo">
+            
+            <h1 class="champion-title">
+                <span style="animation-delay: 2.0s">W</span>
+                <span style="animation-delay: 2.1s">I</span>
+                <span style="animation-delay: 2.2s">N</span>
+            </h1>
+
+            <div id="confetti-container" class="confetti-container"></div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const confettiContainer = document.getElementById('confetti-container');
+            
+            // Create Confetti
+            function createConfetti() {
+                for (let i = 0; i < 100; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    if (Math.random() > 0.5) {
+                        confetti.classList.add('silver');
+                    }
+                    confetti.style.left = `${Math.random() * 100}vw`;
+                    confetti.style.animationDuration = `${3 + Math.random() * 2}s`;
+                    confetti.style.animationDelay = `${2.5 + Math.random()}s`; // Start confetti a bit earlier
+                    confettiContainer.appendChild(confetti);
+                }
+            }
+            createConfetti();
+        });
+    </script>
+</body>
+</html>

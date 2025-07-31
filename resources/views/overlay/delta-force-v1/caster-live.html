@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Casters - Grand Finals</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Teko:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --main-green: #0FF796;
+            --main-red: #FD023B;
+        }
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Russo One', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .font-teko { font-family: 'Teko', sans-serif; }
+        .background-video-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2;
+        }
+        #bg-video {
+            width: 100%; height: 100%; object-fit: cover;
+            filter: blur(5px) brightness(0.3);
+        }
+        main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 4rem;
+        }
+
+        /* Header & Footer Styling */
+        .page-header { position: relative; height: 85px; display: flex; align-items: center; z-index: 10; flex-shrink: 0; }
+        .header-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .header-bg-main { background: rgba(10, 10, 10, 0.7); backdrop-filter: blur(8px); clip-path: polygon(0 0, 100% 0, 100% 75%, 97% 100%, 3% 100%, 0 75%); }
+        .header-bg-accent { background: var(--main-green); clip-path: polygon(3% 100%, 97% 100%, 97.5% calc(100% - 2px), 3.5% calc(100% - 2px)); }
+        .header-content { position: relative; width: 100%; height: 100%; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .event-logo-container { height: 100px; width: 100px; display: flex; justify-content: center; align-items: center; }
+        .event-logo { height: 60px; }
+        .event-title-container { position: absolute; left: 50%; transform: translateX(-50%); text-align: center; line-height: 1; }
+        .event-title-main { font-family: 'Teko', sans-serif; font-size: 3rem; letter-spacing: 2px; font-weight: 700; }
+        .event-title-year { font-size: 1.2rem; color: var(--main-green); font-weight: 700; letter-spacing: 5px; text-transform: uppercase; }
+        .header-details { text-align: right; }
+        .live-indicator { color: var(--main-red); font-weight: bold; }
+        .page-footer { width: 100%; flex-shrink: 0; z-index: 10; padding: 0.5rem 0; background-color: var(--main-green); color: #000; overflow: hidden; white-space: nowrap; }
+        .marquee { display: inline-block; animation: marquee 25s linear infinite; text-transform: uppercase; }
+        .marquee span { margin: 0 2rem; }
+
+        /* --- ✨ LIVE CASTER STYLING (BACKGROUND BARU) ✨ --- */
+        .page-title {
+            font-family: 'Teko', sans-serif;
+            font-size: 3rem;
+            letter-spacing: 4px;
+            margin-bottom: 2rem;
+            flex-shrink: 0;
+            opacity: 0;
+            animation: fade-in-up 0.8s ease forwards;
+        }
+        .casters-layout-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2.5rem;
+            width: 100%;
+            max-width: 1700px;
+        }
+        .caster-module {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fade-in-up 0.8s ease forwards;
+            display: flex;
+            flex-direction: column;
+        }
+        .camera-placeholder {
+            aspect-ratio: 16 / 9;
+            width: 100%;
+            position: relative;
+            /* ✨ Latar belakang ditambahkan di sini ✨ */
+            background: repeating-linear-gradient(45deg, rgba(255,255,255,0.02), rgba(255,255,255,0.02) 2px, transparent 2px, transparent 10px), #111;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .camera-placeholder::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            box-shadow: inset 0 0 25px rgba(0,0,0,0.8); /* Efek bayangan dalam */
+        }
+
+        .caster-nameplate {
+            background: rgba(15, 15, 15, 0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: none;
+            padding: 1rem 1.5rem;
+            clip-path: polygon(0 0, 95% 0, 100% 25%, 100% 100%, 0 100%);
+        }
+        .caster-name {
+            font-family: 'Teko', sans-serif;
+            font-size: 2.8rem;
+            line-height: 1;
+            color: var(--main-green);
+        }
+        .caster-role {
+            font-size: 1.1rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: -0.25rem;
+        }
+        
+        /* Animations */
+        @keyframes marquee { from { transform: translateX(0%); } to { transform: translateX(-50%); } }
+        @keyframes fade-in-up { to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+    <div class="background-video-container"><video id="bg-video" autoplay loop muted playsinline><source src="/hud/delta-force-v1/assets/videos/bg.mp4"></video></div>
+
+    <header class="page-header"><div class="header-layer header-bg-main"></div><div class="header-layer header-bg-accent"></div><div class="header-content"><div class="event-logo-container"><img src="https://www.studentsportcompany.com/wp-content/uploads/2022/05/BUEC.png" alt="Event Logo" class="event-logo"></div><div class="event-title-container"><div class="event-title-main">GRAND FINALS</div><div class="event-title-year">2025</div></div><div class="header-details"><div id="current-date" class="text-sm"></div></div></div></header>
+
+    <main>
+        <h1 class="page-title text-white">ON THE DESK</h1>
+        <div class="casters-layout-grid">
+            <div class="caster-module" style="animation-delay: 0.2s;">
+                <div class="camera-placeholder"></div>
+                <div class="caster-nameplate">
+                    <h2 class="caster-name">John 'BLAZE' Doe</h2>
+                    <p class="caster-role">ANALYST</p>
+                </div>
+            </div>
+
+            <div class="caster-module" style="animation-delay: 0.4s;">
+                <div class="camera-placeholder"></div>
+                <div class="caster-nameplate">
+                    <h2 class="caster-name">Alex Ray</h2>
+                    <p class="caster-role">HOST</p>
+                </div>
+            </div>
+
+            <div class="caster-module" style="animation-delay: 0.6s;">
+                <div class="camera-placeholder"></div>
+                <div class="caster-nameplate">
+                    <h2 class="caster-name">Jane 'VIXEN' Roe</h2>
+                    <p class="caster-role">CASTER</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer class="page-footer"><div class="marquee"><span>• DJARUM SUPER •</span><span>• AGRES.ID •</span></div></footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('current-date').textContent = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+        });
+    </script>
+</body>
+</html>

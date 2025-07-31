@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tournament Bracket - Grand Finals</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Teko:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --main-green: #0FF796;
+            --gold-color: #FFD700;
+        }
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Russo One', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .font-teko { font-family: 'Teko', sans-serif; }
+        .background-video-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2;
+        }
+        #bg-video {
+            width: 100%; height: 100%; object-fit: cover;
+            filter: blur(5px) brightness(0.3);
+        }
+        main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 0;
+        }
+
+        /* Header & Footer Styling */
+        .page-header, .page-footer { width: 100%; flex-shrink: 0; z-index: 10; }
+        .page-header { position: relative; height: 80px; display: flex; align-items: center; }
+        .header-background {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(10, 10, 10, 0.6); backdrop-filter: blur(8px);
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 5% 100%, 0 75%);
+            border-bottom: 2px solid var(--main-green);
+        }
+        .header-content { position: relative; width: 100%; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .event-info { display: flex; align-items: center; gap: 1rem; }
+        .event-logo { height: 45px; }
+        .event-title-group { line-height: 1; }
+        .event-title { font-family: 'Teko', sans-serif; font-size: 2.2rem; letter-spacing: 1px; }
+        .event-year { color: var(--main-green); font-size: 1.2rem; font-weight: 700; letter-spacing: 2px; }
+        .header-details { text-align: right; }
+        .live-indicator { color: var(--main-green); font-weight: bold; animation: pulse 1.5s infinite; }
+        .page-footer { padding: 0.5rem 0; background-color: var(--main-green); overflow: hidden; white-space: nowrap; }
+        .marquee { display: inline-block; animation: marquee 25s linear infinite; text-transform: uppercase; }
+        .marquee span { margin: 0 2rem; }
+
+        /* Bracket Styling */
+        .bracket-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            width: 100%;
+            padding: 0 2rem;
+        }
+        .round {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            flex-grow: 1;
+            min-height: 550px;
+        }
+        .round-title {
+            font-family: 'Teko', sans-serif;
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--main-green);
+        }
+        .matchup-pod {
+            display: flex;
+            flex-direction: column;
+            background: rgba(15, 15, 15, 0.5);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            clip-path: polygon(0 10%, 100% 0, 100% 90%, 0 100%);
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .matchup-pod.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .team {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            transition: opacity 0.5s ease, filter 0.5s ease;
+        }
+        .team img { width: 30px; height: 30px; margin-right: 0.75rem; }
+        .team-name { flex-grow: 1; }
+        .team-score { font-family: 'Teko', sans-serif; font-size: 1.5rem; }
+        .team.winner { filter: brightness(1.2); }
+        .team.winner .team-score { color: var(--gold-color); }
+        .team.loser { opacity: 0.4; filter: grayscale(1); }
+
+        .connector { display: flex; align-items: center; }
+        .connector svg { overflow: visible; }
+        .connector path {
+            stroke: rgba(255, 255, 255, 0.3);
+            stroke-width: 2;
+            fill: none;
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+        }
+        .connector path.draw { animation: draw-line 1s ease-out forwards; }
+        
+        .champion-pod {
+            text-align: center;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .champion-pod.visible { opacity: 1; transform: scale(1); }
+        .champion-pod .team-logo { width: 150px; height: 150px; margin: 0 auto 1rem; filter: drop-shadow(0 0 20px var(--gold-color)); }
+        .champion-title { font-family: 'Teko', sans-serif; font-size: 3rem; color: var(--gold-color); }
+        .champion-name { font-size: 1.5rem; }
+
+        /* Animations */
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+        @keyframes marquee { from { transform: translateX(0%); } to { transform: translateX(-50%); } }
+        @keyframes draw-line { to { stroke-dashoffset: 0; } }
+    </style>
+</head>
+<body>
+    <div class="background-video-container">
+        <video id="bg-video" autoplay loop muted playsinline>
+            <source src="/hud/delta-force-v1/assets/videos/bg.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <header class="page-header">
+        <div class="header-background"></div>
+        <div class="header-content">
+            <div class="event-info">
+                <img src="https://www.studentsportcompany.com/wp-content/uploads/2022/05/BUEC.png" alt="Event Logo" class="event-logo">
+                <div class="event-title-group">
+                    <div class="event-title">GRAND FINALS</div>
+                    <div class="event-year">2025</div>
+                </div>
+            </div>
+            <div class="header-details">
+                <div class="live-indicator">● LIVE</div>
+                <div id="current-date" class="text-sm"></div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="bracket-container">
+            <div class="round">
+                <div class="round-title">PEREMPAT FINAL</div>
+                <div id="qf-1" class="matchup-pod"><div class="team"><img id="qf-1-t1-logo"><span id="qf-1-t1-name" class="team-name"></span><span id="qf-1-t1-score" class="team-score"></span></div><div class="team"><img id="qf-1-t2-logo"><span id="qf-1-t2-name" class="team-name"></span><span id="qf-1-t2-score" class="team-score"></span></div></div>
+                <div id="qf-2" class="matchup-pod"><div class="team"><img id="qf-2-t1-logo"><span id="qf-2-t1-name" class="team-name"></span><span id="qf-2-t1-score" class="team-score"></span></div><div class="team"><img id="qf-2-t2-logo"><span id="qf-2-t2-name" class="team-name"></span><span id="qf-2-t2-score" class="team-score"></span></div></div>
+                <div id="qf-3" class="matchup-pod"><div class="team"><img id="qf-3-t1-logo"><span id="qf-3-t1-name" class="team-name"></span><span id="qf-3-t1-score" class="team-score"></span></div><div class="team"><img id="qf-3-t2-logo"><span id="qf-3-t2-name" class="team-name"></span><span id="qf-3-t2-score" class="team-score"></span></div></div>
+                <div id="qf-4" class="matchup-pod"><div class="team"><img id="qf-4-t1-logo"><span id="qf-4-t1-name" class="team-name"></span><span id="qf-4-t1-score" class="team-score"></span></div><div class="team"><img id="qf-4-t2-logo"><span id="qf-4-t2-name" class="team-name"></span><span id="qf-4-t2-score" class="team-score"></span></div></div>
+            </div>
+
+            <div class="connector"><svg height="550" width="100"><path id="line-qf1-sf1" d="M0 70 C 50 70, 50 140, 100 140"/><path id="line-qf2-sf1" d="M0 210 C 50 210, 50 140, 100 140"/><path id="line-qf3-sf2" d="M0 350 C 50 350, 50 420, 100 420"/><path id="line-qf4-sf2" d="M0 490 C 50 490, 50 420, 100 420"/></svg></div>
+            
+            <div class="round">
+                <div class="round-title">SEMI FINAL</div>
+                <div id="sf-1" class="matchup-pod"><div class="team"><img id="sf-1-t1-logo"><span id="sf-1-t1-name" class="team-name"></span><span id="sf-1-t1-score" class="team-score"></span></div><div class="team"><img id="sf-1-t2-logo"><span id="sf-1-t2-name" class="team-name"></span><span id="sf-1-t2-score" class="team-score"></span></div></div>
+                <div id="sf-2" class="matchup-pod"><div class="team"><img id="sf-2-t1-logo"><span id="sf-2-t1-name" class="team-name"></span><span id="sf-2-t1-score" class="team-score"></span></div><div class="team"><img id="sf-2-t2-logo"><span id="sf-2-t2-name" class="team-name"></span><span id="sf-2-t2-score" class="team-score"></span></div></div>
+            </div>
+
+            <div class="connector"><svg height="550" width="100"><path id="line-sf1-f" d="M0 140 C 50 140, 50 280, 100 280"/><path id="line-sf2-f" d="M0 420 C 50 420, 50 280, 100 280"/></svg></div>
+
+            <div class="round" style="justify-content:center;">
+                <div class="round-title">GRAND FINAL</div>
+                <div id="f-1" class="matchup-pod"><div class="team"><img id="f-1-t1-logo"><span id="f-1-t1-name" class="team-name"></span><span id="f-1-t1-score" class="team-score"></span></div><div class="team"><img id="f-1-t2-logo"><span id="f-1-t2-name" class="team-name"></span><span id="f-1-t2-score" class="team-score"></span></div></div>
+            </div>
+
+            <div class="round" style="justify-content:center;">
+                <div id="champion" class="champion-pod">
+                    <div class="champion-title">CHAMPION</div>
+                    <img id="champion-logo" class="team-logo">
+                    <div id="champion-name" class="champion-name"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer class="page-footer animate-on-load" style="animation-name: slideInUp;">
+        <div class="marquee">
+            <span>• DJARUM SUPER •</span><span>• AGRES.ID •</span><span>• SLEDGEHAMMER •</span><span>• SOCKET PRO •</span><span>• CANNON GAMING •</span><span>• OXYGEN2 •</span>
+            <span>• DJARUM SUPER •</span><span>• AGRES.ID •</span><span>• SLEDGEHAMMER •</span><span>• SOCKET PRO •</span><span>• CANNON GAMING •</span><span>• OXYGEN2 •</span>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('current-date').textContent = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+            
+            const teams = {
+                OXYGEN: { name: 'OXYGEN', logo: 'https://oxygen2.my.id/img/oxygen.png' },
+                DELTA: { name: 'DELTA', logo: 'https://img.pikbest.com/png-images/20241022/red-cloak-hacker-gaming-logo_10991539.png!sw800' },
+                TITANS: { name: 'TITANS', logo: 'https://placehold.co/100x100/FF5733/FFFFFF?text=T' },
+                REBELS: { name: 'REBELS', logo: 'https://placehold.co/100x100/33FF57/FFFFFF?text=R' },
+                GHOSTS: { name: 'GHOSTS', logo: 'https://placehold.co/100x100/3357FF/FFFFFF?text=G' },
+                VIPERS: { name: 'VIPERS', logo: 'https://placehold.co/100x100/FF33A1/FFFFFF?text=V' },
+                KNIGHTS: { name: 'KNIGHTS', logo: 'https://placehold.co/100x100/F1C40F/FFFFFF?text=K' },
+                WOLVES: { name: 'WOLVES', logo: 'https://placehold.co/100x100/9B59B6/FFFFFF?text=W' },
+            };
+
+            const bracketData = {
+                qf1: { t1: teams.OXYGEN, t2: teams.REBELS, s1: 2, s2: 0, winner: 'OXYGEN' },
+                qf2: { t1: teams.GHOSTS, t2: teams.VIPERS, s1: 1, s2: 2, winner: 'VIPERS' },
+                qf3: { t1: teams.KNIGHTS, t2: teams.TITANS, s1: 0, s2: 2, winner: 'TITANS' },
+                qf4: { t1: teams.DELTA, t2: teams.WOLVES, s1: 2, s2: 1, winner: 'DELTA' },
+                sf1: { t1: teams.OXYGEN, t2: teams.VIPERS, s1: 2, s2: 1, winner: 'OXYGEN' },
+                sf2: { t1: teams.TITANS, t2: teams.DELTA, s1: 1, s2: 2, winner: 'DELTA' },
+                f1: { t1: teams.OXYGEN, t2: teams.DELTA, s1: 1, s2: 3, winner: 'DELTA' },
+            };
+
+            function populatePod(matchId, team1, team2, score1, score2, winnerName) {
+                const pod = document.getElementById(matchId);
+                const t1_logo = document.getElementById(`${matchId}-t1-logo`);
+                const t1_name = document.getElementById(`${matchId}-t1-name`);
+                const t1_score = document.getElementById(`${matchId}-t1-score`);
+                const t2_logo = document.getElementById(`${matchId}-t2-logo`);
+                const t2_name = document.getElementById(`${matchId}-t2-name`);
+                const t2_score = document.getElementById(`${matchId}-t2-score`);
+
+                t1_logo.src = team1.logo;
+                t1_name.textContent = team1.name;
+                t1_score.textContent = score1;
+                
+                t2_logo.src = team2.logo;
+                t2_name.textContent = team2.name;
+                t2_score.textContent = score2;
+                
+                pod.classList.add('visible');
+                
+                if (winnerName) {
+                    setTimeout(() => {
+                        if (team1.name === winnerName) {
+                            t1_logo.parentElement.classList.add('winner');
+                            t2_logo.parentElement.classList.add('loser');
+                        } else {
+                            t2_logo.parentElement.classList.add('winner');
+                            t1_logo.parentElement.classList.add('loser');
+                        }
+                    }, 500);
+                }
+            }
+
+            async function runAnimation() {
+                // Quarterfinals
+                populatePod('qf-1', bracketData.qf1.t1, bracketData.qf1.t2, bracketData.qf1.s1, bracketData.qf1.s2, bracketData.qf1.winner);
+                populatePod('qf-2', bracketData.qf2.t1, bracketData.qf2.t2, bracketData.qf2.s1, bracketData.qf2.s2, bracketData.qf2.winner);
+                populatePod('qf-3', bracketData.qf3.t1, bracketData.qf3.t2, bracketData.qf3.s1, bracketData.qf3.s2, bracketData.qf3.winner);
+                populatePod('qf-4', bracketData.qf4.t1, bracketData.qf4.t2, bracketData.qf4.s1, bracketData.qf4.s2, bracketData.qf4.winner);
+                await new Promise(r => setTimeout(r, 1000));
+
+                // Draw lines to Semifinals
+                document.getElementById('line-qf1-sf1').classList.add('draw');
+                document.getElementById('line-qf2-sf1').classList.add('draw');
+                document.getElementById('line-qf3-sf2').classList.add('draw');
+                document.getElementById('line-qf4-sf2').classList.add('draw');
+                await new Promise(r => setTimeout(r, 1000));
+                
+                // Semifinals
+                populatePod('sf-1', bracketData.sf1.t1, bracketData.sf1.t2, bracketData.sf1.s1, bracketData.sf1.s2, bracketData.sf1.winner);
+                populatePod('sf-2', bracketData.sf2.t1, bracketData.sf2.t2, bracketData.sf2.s1, bracketData.sf2.s2, bracketData.sf2.winner);
+                await new Promise(r => setTimeout(r, 1000));
+
+                // Draw lines to Final
+                document.getElementById('line-sf1-f').classList.add('draw');
+                document.getElementById('line-sf2-f').classList.add('draw');
+                await new Promise(r => setTimeout(r, 1000));
+
+                // Final
+                populatePod('f-1', bracketData.f1.t1, bracketData.f1.t2, bracketData.f1.s1, bracketData.f1.s2, bracketData.f1.winner);
+                await new Promise(r => setTimeout(r, 1500));
+                
+                // Champion
+                const championData = teams[bracketData.f1.winner];
+                document.getElementById('champion-logo').src = championData.logo;
+                document.getElementById('champion-name').textContent = championData.name;
+                document.getElementById('champion').classList.add('visible');
+            }
+
+            // Start after a brief delay
+            setTimeout(runAnimation, 1000);
+        });
+    </script>
+</body>
+</html>

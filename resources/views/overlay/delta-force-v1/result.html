@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Match Result - Grand Finals</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Teko:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --main-green: #0FF796;
+            --gold-color: #FFD700;
+            --team-1-color: #00B2FF;
+            --team-2-color: #0FF796;
+        }
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Russo One', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .font-teko { font-family: 'Teko', sans-serif; }
+        .background-video-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2;
+        }
+        #bg-video {
+            width: 100%; height: 100%; object-fit: cover;
+            filter: blur(5px) brightness(0.3);
+        }
+        main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 0;
+        }
+
+        /* Header & Footer Styling */
+        .page-header, .page-footer { width: 100%; flex-shrink: 0; z-index: 10; }
+        .page-header { position: relative; height: 80px; display: flex; align-items: center; }
+        .header-background {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(10, 10, 10, 0.6); backdrop-filter: blur(8px);
+            clip-path: polygon(0 0, 100% 0, 100% 75%, 97% 100%, 3% 100%, 0 75%);
+            border-bottom: 2px solid var(--main-green);
+        }
+        .header-content { position: relative; width: 100%; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .event-info { display: flex; align-items: center; gap: 1rem; }
+        .event-logo { height: 45px; }
+        .event-title-group { line-height: 1; }
+        .event-title { font-family: 'Teko', sans-serif; font-size: 2.2rem; letter-spacing: 1px; }
+        .event-year { color: var(--main-green); font-size: 1.2rem; font-weight: 700; letter-spacing: 2px; }
+        .header-details { text-align: right; }
+        .live-indicator { color: var(--main-green); font-weight: bold; animation: pulse 1.5s infinite; }
+        .page-footer { padding: 0.5rem 0; background-color: var(--main-green); overflow: hidden; white-space: nowrap; }
+        .marquee { display: inline-block; animation: marquee 25s linear infinite; text-transform: uppercase; }
+        .marquee span { margin: 0 2rem; }
+
+        /* --- ✨ RESULT PAGE STYLING ✨ --- */
+        .page-title {
+            font-family: 'Teko', sans-serif;
+            font-size: 3rem;
+            letter-spacing: 4px;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: text-fade-in 1s ease 0.2s forwards;
+        }
+        .results-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 1.5rem;
+            width: 100%;
+            max-width: 1400px;
+        }
+        .team-result-panel, .map-summary-panel {
+            background: rgba(15, 15, 15, 0.5);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: panel-fade-in 0.8s ease-out 0.5s forwards;
+        }
+        .team-result-panel { width: 40%; }
+        .map-summary-panel { width: 20%; animation-delay: 0.8s; }
+        
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid;
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+        .panel-header.left { border-color: var(--team-1-color); }
+        .panel-header.right { border-color: var(--team-2-color); }
+        .team-info { display: flex; align-items: center; gap: 1rem; }
+        .team-info img { height: 60px; }
+        .team-info .team-name { font-family: 'Teko', sans-serif; font-size: 3rem; line-height: 1; }
+        .status-banner { font-family: 'Teko', sans-serif; font-size: 2.5rem; font-weight: 700; }
+        .status-banner.defeat { color: #888; }
+        .status-banner.victory { color: var(--gold-color); text-shadow: 0 0 10px var(--gold-color); }
+        
+        .winner .panel-header.right { border-color: var(--gold-color); }
+
+        .player-stats-table table { width: 100%; }
+        .player-stats-table th { text-align: right; color: #aaa; padding: 0.25rem 0; }
+        .player-stats-table td { padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .player-stats-table td:not(:first-child) { text-align: right; font-family: 'Teko', sans-serif; font-size: 1.5rem; }
+        .player-stats-table tr { opacity: 0; animation: row-fade-in 0.5s ease forwards; }
+        .mvp { background: linear-gradient(90deg, rgba(255, 215, 0, 0.2), transparent 80%); color: var(--gold-color) !important; }
+        .mvp .player-name::before { content: '★ '; }
+
+        .map-summary-panel .summary-title { font-family: 'Teko', sans-serif; font-size: 1.8rem; text-align: center; margin-bottom: 1rem; color: var(--main-green); }
+        .map-score {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem 1rem;
+            margin-bottom: 0.5rem;
+            opacity: 0;
+            animation: row-fade-in 0.5s ease forwards;
+        }
+        .map-name { font-weight: bold; }
+        .score { font-family: 'Teko', sans-serif; font-size: 1.5rem; }
+
+
+        /* Animations */
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+        @keyframes marquee { from { transform: translateX(0%); } to { transform: translateX(-50%); } }
+        @keyframes text-fade-in { to { opacity: 1; } }
+        @keyframes panel-fade-in { to { opacity: 1; transform: translateY(0); } }
+        @keyframes row-fade-in { to { opacity: 1; } }
+    </style>
+</head>
+<body>
+    <div class="background-video-container">
+        <video id="bg-video" autoplay loop muted playsinline>
+            <source src="/hud/delta-force-v1/assets/videos/bg.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <header class="page-header">
+        <div class="header-background"></div>
+        <div class="header-content">
+            <div class="event-info">
+                <img src="https://www.studentsportcompany.com/wp-content/uploads/2022/05/BUEC.png" alt="Event Logo" class="event-logo">
+                <div class="event-title-group">
+                    <div class="event-title">GRAND FINALS</div>
+                    <div class="event-year">2025</div>
+                </div>
+            </div>
+            <div class="header-details">
+                <div class="live-indicator">● LIVE</div>
+                <div id="current-date" class="text-sm"></div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <h1 class="page-title">HASIL PERTANDINGAN</h1>
+        <div class="results-container">
+            <div class="team-result-panel left">
+                <div class="panel-header left">
+                    <div class="team-info">
+                        <img src="https://oxygen2.my.id/img/oxygen.png">
+                        <div class="team-name">OXYGEN</div>
+                    </div>
+                    <div class="status-banner defeat">DEFEAT</div>
+                </div>
+                <div id="team1-stats" class="player-stats-table"></div>
+            </div>
+
+            <div class="map-summary-panel">
+                <h3 class="summary-title">SKOR PETA</h3>
+                <div id="map-scores"></div>
+            </div>
+            
+            <div class="team-result-panel right winner">
+                 <div class="panel-header right">
+                    <div class="team-info">
+                        <img src="https://img.pikbest.com/png-images/20241022/red-cloak-hacker-gaming-logo_10991539.png!sw800">
+                        <div class="team-name">DELTA</div>
+                    </div>
+                    <div class="status-banner victory">VICTORY</div>
+                </div>
+                <div id="team2-stats" class="player-stats-table"></div>
+            </div>
+        </div>
+    </main>
+    
+    <footer class="page-footer">
+        <div class="marquee">
+            <span>• SELAMAT KEPADA TIM DELTA •</span><span>• TERIMA KASIH TELAH MENONTON •</span>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('current-date').textContent = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+
+            const team1StatsContainer = document.getElementById('team1-stats');
+            const team2StatsContainer = document.getElementById('team2-stats');
+            const mapScoresContainer = document.getElementById('map-scores');
+
+            const team1Data = [
+                { name: 'Zephyr', k: 45, d: 50, a: 15, score: 4800 },
+                { name: 'Spectre', k: 42, d: 52, a: 12, score: 4500 },
+                { name: 'Vixen', k: 35, d: 55, a: 25, score: 4100 },
+                { name: 'Nyx', k: 50, d: 48, a: 8, score: 5100 },
+                { name: 'Havoc', k: 38, d: 51, a: 10, score: 4200 },
+            ];
+            
+            const team2Data = [
+                { name: 'Undertaker', k: 55, d: 40, a: 10, score: 5800 },
+                { name: 'Vortex', k: 65, d: 42, a: 15, score: 6900, mvp: true },
+                { name: 'Wraith', k: 52, d: 45, a: 12, score: 5500 },
+                { name: 'Xenon', k: 48, d: 43, a: 18, score: 5400 },
+                { name: 'Yeti', k: 45, d: 46, a: 9, score: 5000 },
+            ];
+
+            const mapData = [
+                { map: 'Ascension', score1: 13, score2: 10 },
+                { map: 'Threshold', score1: 9, score2: 13 },
+                { map: 'Cracked', score1: 11, score2: 13 },
+            ];
+
+            function createTable(players) {
+                let tableHTML = '<table><thead><tr><th>PLAYER</th><th>K</th><th>D</th><th>A</th><th>SCORE</th></tr></thead><tbody>';
+                players.forEach((p, i) => {
+                    tableHTML += `<tr style="animation-delay: ${1.5 + i * 0.1}s" class="${p.mvp ? 'mvp' : ''}">
+                        <td><span class="player-name">${p.name}</span></td>
+                        <td>${p.k}</td><td>${p.d}</td><td>${p.a}</td><td>${p.score}</td>
+                    </tr>`;
+                });
+                tableHTML += '</tbody></table>';
+                return tableHTML;
+            }
+
+            team1StatsContainer.innerHTML = createTable(team1Data);
+            team2StatsContainer.innerHTML = createTable(team2Data);
+
+            mapData.forEach((m, i) => {
+                mapScoresContainer.innerHTML += `
+                    <div class="map-score" style="animation-delay: ${1.0 + i * 0.2}s">
+                        <span class="map-name">${m.map}</span>
+                        <span class="score">${m.score1} : ${m.score2}</span>
+                    </div>
+                `;
+            });
+        });
+    </script>
+</body>
+</html>

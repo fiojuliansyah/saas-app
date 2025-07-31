@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Stage - Grand Finals</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Teko:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --main-green: #0FF796;
+            --main-red: #FD023B;
+        }
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Russo One', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .font-teko { font-family: 'Teko', sans-serif; }
+        .background-video-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2;
+        }
+        #bg-video {
+            width: 100%; height: 100%; object-fit: cover;
+            filter: blur(5px) brightness(0.3);
+        }
+        main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 2rem;
+        }
+
+        /* Header & Footer Styling */
+        .page-header { position: relative; height: 85px; display: flex; align-items: center; z-index: 10; flex-shrink: 0; }
+        .header-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .header-bg-main { background: rgba(10, 10, 10, 0.7); backdrop-filter: blur(8px); clip-path: polygon(0 0, 100% 0, 100% 75%, 97% 100%, 3% 100%, 0 75%); }
+        .header-bg-accent { background: var(--main-green); clip-path: polygon(3% 100%, 97% 100%, 97.5% calc(100% - 2px), 3.5% calc(100% - 2px)); }
+        .header-content { position: relative; width: 100%; height: 100%; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .event-logo-container { height: 100px; width: 100px; display: flex; justify-content: center; align-items: center; }
+        .event-logo { height: 60px; }
+        .event-title-container { position: absolute; left: 50%; transform: translateX(-50%); text-align: center; line-height: 1; }
+        .event-title-main { font-family: 'Teko', sans-serif; font-size: 3rem; letter-spacing: 2px; font-weight: 700; }
+        .event-title-year { font-size: 1.2rem; color: var(--main-green); font-weight: 700; letter-spacing: 5px; text-transform: uppercase; }
+        .header-details { text-align: right; }
+        .live-indicator { color: var(--main-red); font-weight: bold; }
+        .page-footer { width: 100%; flex-shrink: 0; z-index: 10; padding: 0.5rem 0; background-color: var(--main-green); color: #000; overflow: hidden; white-space: nowrap; }
+        .marquee { display: inline-block; animation: marquee 25s linear infinite; text-transform: uppercase; }
+        .marquee span { margin: 0 2rem; }
+
+        /* --- GROUP STAGE STYLING --- */
+        .page-title {
+            font-family: 'Teko', sans-serif;
+            font-size: 2rem;
+            letter-spacing: 4px;
+            margin-bottom: 0.5rem; /* Margin dikurangi */
+            flex-shrink: 0;
+        }
+        /* ✨ KETERANGAN SKOR BARU ✨ */
+        .score-legend {
+            font-family: 'Russo One', sans-serif;
+            font-size: 1rem;
+            color: #ccc;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fade-in-up 0.8s ease 0.1s forwards;
+        }
+        .score-legend .separator {
+            color: #555;
+            margin: 0 0.75rem;
+        }
+        .groups-container {
+            display: flex;
+            gap: 1rem;
+            width: 100%;
+            max-width: 1600px;
+        }
+        .group-module {
+            background: rgba(15, 15, 15, 0.5);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            clip-path: polygon(0 0, 100% 0, 100% 95%, 97% 100%, 0 100%);
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fade-in-up 0.8s ease forwards;
+            flex: 1;
+        }
+        .group-title {
+            font-family: 'Teko', sans-serif;
+            font-size: 2rem;
+            color: var(--main-green);
+            border-bottom: 1px solid var(--main-green);
+            padding-bottom: 0.25rem;
+            margin-bottom: 0.75rem;
+        }
+        .standings-table { width: 100%; border-collapse: collapse; }
+        .standings-table th { color: #aaa; text-align: left; padding-bottom: 0.25rem; font-size: 0.9rem;}
+        .standings-table th:not(:first-child) { text-align: center; }
+        .standings-table td { padding: 0.4rem 0; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.9rem;}
+        .standings-table td:not(:first-child) { text-align: center; font-family: 'Teko', sans-serif; font-size: 1.2rem; }
+        .team-cell { display: flex; align-items: center; gap: 0.5rem; }
+        .team-cell img { height: 24px; width: 24px; }
+        .featured-match {
+            margin-top: 0.75rem;
+            border-top: 1px dashed rgba(255,255,255,0.2);
+            padding-top: 0.75rem;
+            text-align: center;
+        }
+        .featured-match .match-title { color: #aaa; font-size: 0.8rem; margin-bottom: 0.25rem; }
+        .match-teams { font-family: 'Teko', sans-serif; font-size: 1.5rem; }
+
+        /* Animations */
+        @keyframes marquee { from { transform: translateX(0%); } to { transform: translateX(-50%); } }
+        @keyframes fade-in-up { to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+    <div class="background-video-container"><video id="bg-video" autoplay loop muted playsinline><source src="/hud/delta-force-v1/assets/videos/bg.mp4"></video></div>
+
+    <header class="page-header"><div class="header-layer header-bg-main"></div><div class="header-layer header-bg-accent"></div><div class="header-content"><div class="event-logo-container"><img src="https://www.studentsportcompany.com/wp-content/uploads/2022/05/BUEC.png" alt="Event Logo" class="event-logo"></div><div class="event-title-container"><div class="event-title-main">GRAND FINALS</div><div class="event-title-year">2025</div></div><div class="header-details"><div class="live-indicator">● LIVE</div></div></div></header>
+
+    <main>
+        <h1 class="page-title" style="animation: fade-in-up 0.8s ease forwards;">GROUP STAGE</h1>
+        <p class="score-legend">
+            <span>MENANG = 3 POIN</span>
+            <span class="separator">|</span>
+            <span>SERI = 1 POIN</span>
+            <span class="separator">|</span>
+            <span>KALAH = 0 POIN</span>
+        </p>
+
+        <div class="groups-container">
+            <div class="group-module" style="animation-delay: 0.2s;">
+                <h2 class="group-title">GROUP A</h2>
+                <table class="standings-table">
+                    <thead><tr><th>TIM</th><th class="w-10">W</th><th class="w-10">D</th><th class="w-10">L</th><th class="w-10">PTS</th></tr></thead>
+                    <tbody>
+                        <tr><td><div class="team-cell"><img src="https://oxygen2.my.id/img/oxygen.png" alt="OXYGEN"><span>OXYGEN</span></div></td><td>2</td><td>1</td><td>0</td><td>7</td></tr>
+                        <tr><td><div class="team-cell"><img src="https://placehold.co/100x100/33FF57/FFFFFF?text=R" alt="REBELS"><span>REBELS</span></div></td><td>2</td><td>0</td><td>1</td><td>6</td></tr>
+                        <tr><td><div class="team-cell"><img src="https://placehold.co/100x100/3357FF/FFFFFF?text=G" alt="GHOSTS"><span>GHOSTS</span></div></td><td>0</td><td>1</td><td>2</td><td>1</td></tr>
+                        <tr><td><div class="team-cell"><img src="https://placehold.co/100x100/E74C3C/FFFFFF?text=D" alt="DRAGONS"><span>DRAGONS</span></div></td><td>0</td><td>0</td><td>3</td><td>0</td></tr>
+                    </tbody>
+                </table>
+                <div class="featured-match"><div class="match-title">PERTANDINGAN SELANJUTNYA</div><div class="match-teams"><span>REBELS</span><span class="text-gray-500 mx-2">VS</span><span>GHOSTS</span></div></div>
+            </div>
+            <div class="group-module" style="animation-delay: 0.4s;">
+                <h2 class="group-title">GROUP B</h2>
+                <table class="standings-table">
+                    <thead><tr><th>TIM</th><th class="w-10">W</th><th class="w-10">D</th><th class="w-10">L</th><th class="w-10">PTS</th></tr></thead>
+                    <tbody>
+                        <tr><td><div class="team-cell"><img src="https://img.pikbest.com/png-images/20241022/red-cloak-hacker-gaming-logo_10991539.png!sw800" alt="DELTA"><span>DELTA</span></div></td><td>3</td><td>0</td><td>0</td><td>9</td></tr>
+                        <tr><td><div class="team-cell"><img src="https://placehold.co/100x100/FF33A1/FFFFFF?text=V" alt="VIPERS"><span>VIPERS</span></div></td><td>2</td><td>0</td><td>1</td><td>6</td></tr>
+                        <tr><td><div class="team-cell"><img src="https://placehold.co/100x100/3498DB/FFFFFF?text=S" alt="SHARKS"><span>SHARKS</span></div></td><td>1</td><td>0</td><td>2</td><td>3</td></tr>
+                        <tr><td><div class="team-cell"><img src="https://placehold.co/100x100/1ABC9C/FFFFFF?text=P" alt="PIONEERS"><span>PIONEERS</span></div></td><td>0</td><td>0</td><td>3</td><td>0</td></tr>
+                    </tbody>
+                </table>
+                <div class="featured-match"><div class="match-title">PERTANDINGAN SELANJUTNYA</div><div class="match-teams"><span>DELTA</span><span class="text-gray-500 mx-2">VS</span><span>VIPERS</span></div></div>
+            </div>
+            <div class="group-module" style="animation-delay: 0.6s;">
+                <h2 class="group-title">GROUP C</h2>
+                <table class="standings-table">
+                    <thead><tr><th>TIM</th><th class="w-10">W</th><th class="w-10">D</th><th class="w-10">L</th><th class="w-10">PTS</th></tr></thead>
+                    <tbody>
+                        <tr><td><div class="team-cell"><img src="https://placehold.co/100x100/FF5733/FFFFFF?text=T" alt="TITANS"><span>TITANS</span></div></td><td>2</td><td>0</td><td>1</td><td>6</td></tr>
+                        <tr><td><div class="team-cell"><img src="https://placehold.co/100x100/F1C40F/FFFFFF?text=K" alt="KNIGHTS"><span>KNIGHTS</span></div></td><td>2</td><td>0</td><td>1</td><td>6</td></tr>
+                        <tr><td><div class="team-cell"><img src="https://placehold.co/100x100/F39C12/FFFFFF?text=H" alt="HAWKS"><span>HAWKS</span></div></td><td>1</td><td>1</td><td>1</td><td>4</td></tr>
+                        <tr><td><div class="team-cell"><img src="https://placehold.co/100x100/8E44AD/FFFFFF?text=S" alt="STORM"><span>STORM</span></div></td><td>0</td><td>1</td><td>2</td><td>1</td></tr>
+                    </tbody>
+                </table>
+                <div class="featured-match"><div class="match-title">PERTANDINGAN SELANJUTNYA</div><div class="match-teams"><span>TITANS</span><span class="text-gray-500 mx-2">VS</span><span>HAWKS</span></div></div>
+            </div>
+            <div class="group-module" style="animation-delay: 0.8s;">
+                <h2 class="group-title">GROUP D</h2>
+                <table class="standings-table">
+                     <thead><tr><th>TIM</th><th class="w-10">W</th><th class="w-10">D</th><th class="w-10">L</th><th class="w-10">PTS</th></tr></thead>
+                    <tbody>
+                        <tr><td><div class="team-cell"><img src="https://placehold.co/100x100/9B59B6/FFFFFF?text=W" alt="WOLVES"><span>WOLVES</span></div></td><td>1</td><td>2</td><td>0</td><td>5</td></tr>
+                        <tr><td><div class="team-cell"><img src="https://placehold.co/100x100/2C3E50/FFFFFF?text=R" alt="RAVENS"><span>RAVENS</span></div></td><td>1</td><td>2</td><td>0</td><td>5</td></tr>
+                        <tr><td><div class="team-cell"><img src="https://placehold.co/100x100/E67E22/FFFFFF?text=B" alt="BLAZE"><span>BLAZE</span></div></td><td>0</td><td>1</td><td>2</td><td>1</td></tr>
+                        <tr><td><div class="team-cell"><img src="https://placehold.co/100x100/3498DB/FFFFFF?text=F" alt="FROST"><span>FROST</span></div></td><td>0</td><td>1</td><td>2</td><td>1</td></tr>
+                    </tbody>
+                </table>
+                <div class="featured-match"><div class="match-title">PERTANDINGAN SELANJUTNYA</div><div class="match-teams"><span>WOLVES</span><span class="text-gray-500 mx-2">VS</span><span>RAVENS</span></div></div>
+            </div>
+        </div>
+    </main>
+    
+    <footer class="page-footer"><div class="marquee"><span>• DJARUM SUPER •</span><span>• AGRES.ID •</span></div></footer>
+</body>
+</html>
