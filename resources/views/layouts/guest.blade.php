@@ -10,7 +10,7 @@
     <meta name="author" content="">
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon.png">
-    <title>CoinDash - Cryptocurrency Dashboard Admin Template</title>
+    <title>GIHUD.GG | Live HUD Management</title>
     <!-- Custom CSS -->
     
     <link href="/assets/css/style.css" rel="stylesheet">
