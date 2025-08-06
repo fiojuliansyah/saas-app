@@ -168,7 +168,9 @@
     
     <div id="sponsor-slideshow-container">
         <div id="sponsor-slideshow">
-            <img src="/huds/delta-force-v1/assets/gihud.png" alt="Sponsor 1" class="fade-slide active">
+            <img src="/huds/delta-force-v1/assets/gihud.png" class="fade-slide active">
+            <img src="/huds/delta-force-v1/assets/delta-force.png" class="fade-slide">
+            <img src="/huds/delta-force-v1/assets/dunia-games.png" class="fade-slide">
         </div>
     </div>
 

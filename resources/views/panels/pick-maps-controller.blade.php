@@ -51,7 +51,6 @@
 
         <div class="lg:col-span-3">
             <div id="map-pool" class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {{-- Daftar Map Anda --}}
                 <div class="map-card group" data-map-name="CyClone"><img src="/huds/delta-force-v1/assets/maps/cyclone.png" alt="CyClone" class="map-image"><div class="map-overlay"></div><h3 class="map-name">CYCLONE</h3><div class="map-action-overlay"><button class="action-button bg-red-600 hover:bg-red-500">BAN MAP</button></div><div class="map-banned-overlay"><span>BANNED</span></div><div class="map-picked-overlay"><span>PICKED</span></div></div>
                 <div class="map-card group" data-map-name="Train Wreck"><img src="/huds/delta-force-v1/assets/maps/train.png" alt="Train Wreck" class="map-image"><div class="map-overlay"></div><h3 class="map-name">TRAIN WRECK</h3><div class="map-action-overlay"><button class="action-button bg-red-600 hover:bg-red-500">BAN MAP</button></div><div class="map-banned-overlay"><span>BANNED</span></div><div class="map-picked-overlay"><span>PICKED</span></div></div>
                 <div class="map-card group" data-map-name="Knife Edge"><img src="/huds/delta-force-v1/assets/maps/knife.png" alt="Knife Edge" class="map-image"><div class="map-overlay"></div><h3 class="map-name">KNIFE EDGE</h3><div class="map-action-overlay"><button class="action-button bg-red-600 hover:bg-red-500">BAN MAP</button></div><div class="map-banned-overlay"><span>BANNED</span></div><div class="map-picked-overlay"><span>PICKED</span></div></div>
@@ -74,7 +73,15 @@
         </div>
     </main>
 
-<script>
+    <footer class="w-full max-w-4xl mt-auto pt-8 pb-4">
+        <h3 class="text-center text-2xl text-gray-400 font-bold tracking-widest mb-4">SPONSORED BY</h3>
+        <div class="flex justify-center items-center gap-x-8 md:gap-x-12">
+            <img src="/huds/delta-force-v1/assets/gihud.png" alt="Sponsor 1" class="max-h-16 transition-transform hover:scale-110 filter grayscale brightness-0 invert">
+            <img src="/huds/delta-force-v1/assets/delta-force.png" alt="Sponsor 2" class="max-h-16 transition-transform hover:scale-110 filter grayscale brightness-0 invert">
+            <img src="/huds/delta-force-v1/assets/dunia-games.png" alt="Sponsor 3" class="max-h-16 transition-transform hover:scale-110 filter grayscale brightness-0 invert">
+        </div>
+    </footer>
+    <script>
 document.addEventListener('DOMContentLoaded', () => {
     let localState = { last_update: 0 };
     let pollingInterval;
@@ -117,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 500);
     };
 
-const updateUI = (state) => {
+    const updateUI = (state) => {
         if (state.phase === 'waiting') {
             phaseTitle.textContent = 'WAITING OPERATOR';
             phaseTitle.className = "text-5xl md:text-6xl font-bold tracking-wider uppercase transition-colors duration-300 text-gray-400";
@@ -129,23 +136,20 @@ const updateUI = (state) => {
             return;
         }
 
-        // Reset UI
         mapCards.forEach(card => card.classList.remove('is-banned', 'is-picked'));
         
-        // ===== FIX DI SINI: Kosongkan daftar sebelum diisi ulang =====
         teamABans.innerHTML = '';
         teamBBans.innerHTML = '';
-        // ==========================================================
         
         state.team_a_bans.forEach(mapName => {
             const card = document.querySelector(`.map-card[data-map-name="${mapName}"]`);
             if (card) card.classList.add('is-banned');
-            teamABans.innerHTML += `<div>${mapName}</div>`; // Sekarang ini aman
+            teamABans.innerHTML += `<div>${mapName}</div>`;
         });
         state.team_b_bans.forEach(mapName => {
             const card = document.querySelector(`.map-card[data-map-name="${mapName}"]`);
             if (card) card.classList.add('is-banned');
-            teamBBans.innerHTML += `<div>${mapName}</div>`; // Sekarang ini aman
+            teamBBans.innerHTML += `<div>${mapName}</div>`;
         });
 
         teamAPick.textContent = state.team_a_pick || '';

@@ -13,7 +13,7 @@
     <form method="POST" action="{{ route('matches.update', $row->id) }}" enctype="multipart/form-data">
       @csrf
       @method('PUT')
-        <div class="modal-content">
+        <div class="modal-content text-start" style="text-align: left">
             <div class="modal-header">
             <h5 class="modal-title" id="createMatchModalLabel">Edit Match</h5>
             <button type="button" class="btn text-white fs-5" data-bs-dismiss="modal" aria-label="Close" style="background: none; border: none;">
@@ -21,21 +21,32 @@
             </button>
             </div>
             <div class="modal-body">
-            <div class="mb-3">
-                <label class="form-label">CHOOSE TEAM</label>
-                <select name="team_a_id" class="form-control" id="">
-                    
+           <div class="mb-3">
+                <label class="form-label">CHOOSE TEAM A</label>
+                <select name="team_a_id" class="form-control">
+                    <option value="">Choose Team</option>
+                    @foreach ($teams as $team)
+                        <option value="{{ $team->id }}" @selected(old('team_a_id', $row->team_a_id ?? null) == $team->id)>
+                            {{ $team->name }}
+                        </option>
+                    @endforeach
                 </select>
             </div>
+
             <div class="mb-3">
-                <label class="form-label">CHOOSE TEAM</label>
-                <select name="team_b_id" class="form-control" id="">
-                    
+                <label class="form-label">CHOOSE TEAM B</label>
+                <select name="team_b_id" class="form-control">
+                    <option value="">Choose Team</option>
+                    @foreach ($teams as $team)
+                        <option value="{{ $team->id }}" @selected(old('team_b_id', $row->team_b_id ?? null) == $team->id)>
+                            {{ $team->name }}
+                        </option>
+                    @endforeach
                 </select>
             </div>
             <div class="mb-3">
                 <label class="form-label">MATCH DATE</label>
-                <input type="date" name="match_datetime" class="form-control" required>
+                <input type="date" name="match_datetime" value="{{ $row->match_datetime }}" class="form-control" required>
             </div>
             </div>
             <div class="modal-footer">
