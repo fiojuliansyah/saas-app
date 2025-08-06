@@ -55,11 +55,8 @@
                 <div>
                     <label for="team-a-score" class="block text-sm font-medium text-gray-400 mb-1">Score</label>
                     <div class="flex items-center gap-4">
-                        <!-- PERBAIKAN: Tambahkan class="score-btn" dan data-attributes -->
                         <button data-team="a" data-action="decrement" class="score-btn bg-red-600 hover:bg-red-700 text-white font-bold p-3 rounded-md transition duration-300">-</button>
-                        <!-- PERBAIKAN: Ubah ID agar konsisten -->
                         <input type="number" id="team-a-score" value="{{ $panelmatch->score_team_a ?? 0 }}" class="w-full bg-gray-700 text-center text-white text-lg rounded-md p-2">
-                        <!-- PERBAIKAN: Tambahkan class="score-btn" dan data-attributes -->
                         <button data-team="a" data-action="increment" class="score-btn bg-green-600 hover:bg-green-700 text-white font-bold p-3 rounded-md transition duration-300">+</button>
                     </div>
                 </div>
