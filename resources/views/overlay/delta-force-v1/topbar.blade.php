@@ -138,14 +138,12 @@
         }
     </style>
 </head>
-<!-- 1. Tambahkan data-url untuk menyimpan URL AJAX -->
 <body class="text-white antialiased" data-url="{{ route('overlay.data', $topbarmatch->room_code) }}">
 
     <div class="top-hud-container">
         <div class="team-display-column left" style="animation-delay: 0.4s;">
             <div class="role-label-bar attacker">Attacker</div>
             <div class="team-panel left">
-                <!-- BERI ID PADA SEMUA ELEMEN YANG BISA BERUBAH -->
                 <img id="flag-team-a" src="{{ asset('assets/images/flags/' . ($topbarmatch->teamA->country ?? 'default') . '.png') }}" alt="Country Flag" class="team-flag update-anim">
                 <img id="logo-team-a" src="{{ asset('storage/' . $topbarmatch->teamA->logo) }}" alt="Logo" class="team-logo-sm update-anim">
                 <div id="name-team-a" class="team-name update-anim" style="color: var(--team-1-color);">{{ $topbarmatch->teamA->short_name }}</div>
@@ -159,7 +157,6 @@
 
         <div class="team-display-column right" style="animation-delay: 0.4s;">
             <div class="team-panel right">
-                <!-- BERI ID PADA SEMUA ELEMEN YANG BISA BERUBAH -->
                 <div id="score-team-b" class="team-score update-anim">{{ $topbarmatch->score_team_b ?? 0 }}</div>
                 <div id="name-team-b" class="team-name update-anim" style="color: var(--team-2-color);">{{ $topbarmatch->teamB->short_name }}</div>
                 <img id="logo-team-b" src="{{ asset('storage/' . $topbarmatch->teamB->logo) }}" alt="Logo" class="team-logo-sm update-anim">

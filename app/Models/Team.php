@@ -17,4 +17,9 @@ class Team extends Model
         'short_name',
         'country',
     ];
+
+    public function players()
+    {
+        return $this->hasMany(Player::class);
+    }
 }

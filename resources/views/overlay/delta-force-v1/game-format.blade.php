@@ -174,7 +174,7 @@
 <body>
     <div class="background-video-container">
         <video id="bg-video" autoplay loop muted playsinline>
-            <source src="/hud/delta-force-v1/assets/videos/bg.mp4" type="video/mp4">
+            <source src="/huds/delta-force-v1/assets/videos/bg.mp4" type="video/mp4">
         </video>
     </div>
 
@@ -184,7 +184,7 @@
             <div class="format-col" style="animation-delay: 0.2s;">
                 <h3 class="col-title">TEAM FORMAT</h3>
                 <div class="team-format-card">
-                    <img src="/hud/delta-force-v1/assets/format.jpg" alt="Match Cover">
+                    <img src="/huds/delta-force-v1/assets/format.jpg" alt="Match Cover">
                     <div class="versus-block">
                         <div class="team-name" style="color: var(--main-red);">ATTACKER</div>
                         <div class="vs-text">VERSUS</div>
@@ -215,28 +215,28 @@
 
             <div class="format-col map-pool-col" style="animation-delay: 0.6s;">
                 <h3 class="col-title">MAP POOL</h3>
-                <div class="map-card" style="background-image: url('assets/maps/ascension.png');">
+                <div class="map-card" style="background-image: url('/huds/delta-force-v1/assets/maps/ascension.png');">
                     <div class="map-name">Ascension</div>
                 </div>
-                <div class="map-card" style="background-image: url('assets/maps/shafted.jpg');">
+                <div class="map-card" style="background-image: url('/huds/delta-force-v1/assets/maps/shafted.jpg');">
                     <div class="map-name">Shafted</div>
                 </div>
-                <div class="map-card" style="background-image: url('assets/maps/cracked.png');">
+                <div class="map-card" style="background-image: url('/huds/delta-force-v1/assets/maps/cracked.png');">
                     <div class="map-name">Cracked</div>
                 </div>
-                <div class="map-card" style="background-image: url('assets/maps/threshold.png');">
+                <div class="map-card" style="background-image: url('/huds/delta-force-v1/assets/maps/threshold.png');">
                     <div class="map-name">Threshold</div>
                 </div>
-                <div class="map-card" style="background-image: url('assets/maps/train.png');">
+                <div class="map-card" style="background-image: url('/huds/delta-force-v1/assets/maps/train.png');">
                     <div class="map-name">Train Wreck</div>
                 </div>
-                <div class="map-card" style="background-image: url('assets/maps/trench-lines.png');">
+                <div class="map-card" style="background-image: url('/huds/delta-force-v1/assets/maps/trench-lines.png');">
                     <div class="map-name">Trench Lines</div>
                 </div>
-                <div class="map-card" style="background-image: url('assets/maps/knife.png');">
+                <div class="map-card" style="background-image: url('/huds/delta-force-v1/assets/maps/knife.png');">
                     <div class="map-name">Knife Edge</div>
                 </div>
-                <div class="map-card" style="background-image: url('assets/maps/cyclone.png');">
+                <div class="map-card" style="background-image: url('/huds/delta-force-v1/assets/maps/cyclone.png');">
                     <div class="map-name">CyClone</div>
                 </div>
             </div>

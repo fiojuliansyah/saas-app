@@ -57,9 +57,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/overlay/{roomCode}/swap-sides', [OverlayController::class, 'swapsides'])->name('overlay.swapsides');
     Route::get('/overlay/{roomCode}/ban-maps', [OverlayController::class, 'banmaps'])->name('overlay.banmaps');
     Route::get('/overlay/{roomCode}/timeout', [OverlayController::class, 'timeout'])->name('overlay.timeout');
+    Route::get('/overlay/{roomCode}/game-format', [OverlayController::class, 'gameFormat'])->name('overlay.format');
     Route::get('/overlay/transition-v1', [OverlayController::class, 'transitionV1'])->name('overlay.transition-v1');
     Route::get('/overlay/transition-v2', [OverlayController::class, 'transitionV2'])->name('overlay.transition-v2');
-    Route::get('/overlay/replay', [OverlayController::class, 'replay'])->name('overlay.replay');
+    Route::get('/overlay/{roomCode}/replay', [OverlayController::class, 'replay'])->name('overlay.replay');
+    Route::get('/overlay/{roomCode}/team', [OverlayController::class, 'team'])->name('overlay.team');
     Route::get('/overlay/get-swap-data/{roomCode}', [OverlayController::class, 'getSwapData'])->name('overlay.swap.data');
 
 require __DIR__.'/auth.php';

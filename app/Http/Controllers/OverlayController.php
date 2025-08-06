@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Battle;
+use App\Models\Format;
 use Illuminate\Http\Request;
 
 class OverlayController extends Controller
@@ -66,7 +67,6 @@ class OverlayController extends Controller
         ];
         $stateHash = md5(json_encode($dataState));
 
-        // KEMBALIKAN SEMUA DATA YANG DIPERLUKAN, BUKAN HANYA HASH
         return response()->json([
             'stateHash' => $stateHash,
             'teamA' => [
@@ -107,10 +107,36 @@ class OverlayController extends Controller
         return view('overlay.delta-force-v1.transition-v2');
     }
 
-    public function replay()
+    public function replay($roomCode)
     {        
         return view('overlay.delta-force-v1.replay');
     }
 
+    public function gameFormat($roomCode)
+    {
+        $format = Format::first();
 
+        return view('overlay.delta-force-v1.game-format',compact('format'));
+    }
+
+    public function team($roomCode)
+    {
+        $teammatch = Battle::with([
+                            'panel', 
+                            'teamA.players', 
+                            'teamB.players'
+                        ])
+                        ->where('room_code', $roomCode)
+                        ->firstOrFail();
+
+        $squadTeamA = $teammatch->teamA->players->groupBy('squad');
+        $squadTeamB = $teammatch->teamB->players->groupBy('squad');
+        
+        return view('overlay.delta-force-v1.team', compact(
+            'teammatch', 
+            'roomCode', 
+            'squadTeamA', 
+            'squadTeamB'
+        ));
+    }
 }

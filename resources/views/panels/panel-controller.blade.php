@@ -188,9 +188,27 @@
                     </div>
                 </div>
                 <div>
+                    <label for="link-format" class="block text-sm font-medium text-gray-400 mb-1">Game Format</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="link-format" value="{{ route('overlay.format', $panelmatch->room_code) }}" readonly class="flex-grow bg-gray-900 text-gray-400 border-gray-700 rounded-md p-2 text-sm">
+                        <button class="copy-link-btn bg-teal-600 hover:bg-teal-700 text-white font-bold p-2 rounded-md transition duration-300">
+                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                        </button>
+                    </div>
+                </div>
+                <div>
                     <label for="link-timeout" class="block text-sm font-medium text-gray-400 mb-1">Replay</label>
                     <div class="flex gap-2">
-                        <input type="text" id="link-timeout" value="{{ route('overlay.replay') }}" readonly class="flex-grow bg-gray-900 text-gray-400 border-gray-700 rounded-md p-2 text-sm">
+                        <input type="text" id="link-timeout" value="{{ route('overlay.replay', $panelmatch->room_code) }}" readonly class="flex-grow bg-gray-900 text-gray-400 border-gray-700 rounded-md p-2 text-sm">
+                        <button class="copy-link-btn bg-teal-600 hover:bg-teal-700 text-white font-bold p-2 rounded-md transition duration-300">
+                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                        </button>
+                    </div>
+                </div>
+                <div>
+                    <label for="link-team" class="block text-sm font-medium text-gray-400 mb-1">Team</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="link-team" value="{{ route('overlay.team', $panelmatch->room_code) }}" readonly class="flex-grow bg-gray-900 text-gray-400 border-gray-700 rounded-md p-2 text-sm">
                         <button class="copy-link-btn bg-teal-600 hover:bg-teal-700 text-white font-bold p-2 rounded-md transition duration-300">
                              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
                         </button>
