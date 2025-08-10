@@ -69,7 +69,7 @@
             <input type="date" name="match_date" class="form-control" required>
           </div>
           <div class="mb-3">
-            <label class="form-label">MATCH DATE</label>
+            <label class="form-label">MATCH TIME</label>
             <input type="time" name="match_time" class="form-control" required>
           </div>
         </div>

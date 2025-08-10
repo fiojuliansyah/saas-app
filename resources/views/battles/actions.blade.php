@@ -46,7 +46,11 @@
             </div>
             <div class="mb-3">
                 <label class="form-label">MATCH DATE</label>
-                <input type="date" name="match_datetime" value="{{ $row->match_datetime }}" class="form-control" required>
+                <input type="date" name="match_date" value="{{ $row->match_date }}" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">MATCH TIME</label>
+                <input type="date" name="match_date" value="{{ $row->match_time }}" class="form-control" required>
             </div>
             </div>
             <div class="modal-footer">
