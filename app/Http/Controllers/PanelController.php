@@ -134,9 +134,14 @@ class PanelController extends Controller
         }
     }
 
+    // private $availableMaps = [
+    //     'CyClone', 'Train Wreck', 'Threshold',
+    //     'Ascension', 'Cracked', 'Trench Lines', 'Knife Edge', 'Shafted',
+    // ];
+
     private $availableMaps = [
-        'CyClone', 'Train Wreck', 'Knife Edge', 'Threshold',
-        'Ascension', 'Cracked', 'Trench Lines', 'Shafted'
+        'CyClone', 'Train Wreck', 'Threshold',
+        'Ascension', 'Cracked', 'Trench Lines'
     ];
 
     private function getCacheKey(Battle $battle)
@@ -169,7 +174,6 @@ class PanelController extends Controller
         return response()->json($state);
     }
 
-    // Helper method yang dibutuhkan oleh getState (pastikan ini juga ada)
     private function handleTimeoutAndGetState(Battle $battle)
     {
         $cacheKey = $this->getCacheKey($battle);
@@ -225,8 +229,7 @@ class PanelController extends Controller
         return response()->json(['success' => true, 'message' => 'Proses Ban/Pick dimulai!']);
     }
 
-
-public function handleTeamAAction(Request $request, $roomCode)
+    public function handleTeamAAction(Request $request, $roomCode)
     {
         // Memastikan request datang dari sesi 'A'
         if (session('my_team_identifier') !== 'A') {
@@ -283,41 +286,64 @@ public function handleTeamAAction(Request $request, $roomCode)
     private function processAction($state, $mapName)
     {
         if ($state['phase'] === 'ban') {
+            // Tolak ban map yang sudah di-ban/pick
+            if (in_array($mapName, $state['bans'], true) || in_array($mapName, $state['picks'], true)) {
+                return $state; // atau lempar error 422 sesuai preferensi
+            }
+
             $state['bans'][] = $mapName;
             if ($state['turn'] === 'A') {
                 $state['team_a_bans'][] = $mapName;
             } else {
                 $state['team_b_bans'][] = $mapName;
             }
-            
+
+            // Ganti giliran terlebih dulu (kalau kamu ingin pick selalu dimulai A, akan di-set ulang di bawah)
             $state['turn'] = ($state['turn'] === 'A') ? 'B' : 'A';
-            
-            if (count($state['bans']) >= 6) {
-                $state['phase'] = 'pick'; // FIX: BARIS INI YANG HILANG
-                $state['turn'] = 'A';     // Reset giliran ke Tim A untuk memulai pick
+
+            // >>> INI BAGIAN PENTING: hitung sisa dan transisi ke PICK saat sisa ≤ 2
+            $remaining = array_values(array_diff(
+                $this->availableMaps,
+                array_merge($state['bans'], $state['picks'])
+            ));
+
+            if (count($remaining) <= 2) {
+                $state['phase'] = 'pick';
+                // Aturan: pick dimulai oleh Tim A (ubah kalau aturannya beda)
+                $state['turn'] = 'A';
             }
 
-        } else if ($state['phase'] === 'pick') {
+        } elseif ($state['phase'] === 'pick') {
+            // Validasi: hanya boleh pick dari sisa map
+            $remaining = array_values(array_diff(
+                $this->availableMaps,
+                array_merge($state['bans'], $state['picks'])
+            ));
+            if (!in_array($mapName, $remaining, true)) {
+                return $state; // atau error 422
+            }
+
             $state['picks'][] = $mapName;
             if ($state['turn'] === 'A') {
                 $state['team_a_pick'] = $mapName;
             } else {
                 $state['team_b_pick'] = $mapName;
             }
-            
+
             $state['turn'] = ($state['turn'] === 'A') ? 'B' : 'A';
 
-            // Cek apakah fase pick sudah selesai
+            // Selesai kalau sudah 2 pick (A & B)
             if (count($state['picks']) >= 2) {
                 $state['phase'] = 'end';
             }
         }
 
-        // Reset timer untuk giliran berikutnya
+        // Reset timer
         $state['turn_starts_at'] = now()->timestamp;
         $state['last_update'] = now()->timestamp;
         return $state;
     }
+
 
     private function performRandomAction($state)
     {

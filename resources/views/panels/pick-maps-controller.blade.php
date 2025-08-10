@@ -81,185 +81,197 @@
             <img src="/huds/delta-force-v1/assets/dunia-games.png" alt="Sponsor 3" class="max-h-16 transition-transform hover:scale-110 filter grayscale brightness-0 invert">
         </div>
     </footer>
-    <script>
-document.addEventListener('DOMContentLoaded', () => {
-    let localState = { last_update: 0 };
-    let pollingInterval;
-    let visualTimerInterval;
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        let localState = { last_update: 0 };
+        let pollingInterval;
+        let visualTimerInterval;
 
-    const timerElement = document.getElementById('timer');
-    const phaseTitle = document.getElementById('phase-title');
-    const turnIndicator = document.getElementById('turn-indicator');
-    const teamAPanel = document.getElementById('team-a-panel');
-    const teamBPanel = document.getElementById('team-b-panel');
-    const teamABans = document.getElementById('team-a-bans');
-    const teamBBans = document.getElementById('team-b-bans');
-    const teamAPick = document.getElementById('team-a-pick');
-    const teamBPick = document.getElementById('team-b-pick');
-    const mapCards = document.querySelectorAll('.map-card');
-    const mapPool = document.getElementById('map-pool');
-    
-    const myTeam = "{{ $myTeam ?? '' }}";
-    const teamAName = "{{ $panelmatch->teamA->name }}";
-    const teamBName = "{{ $panelmatch->teamB->name }}";
-    const getStateUrl = "{{ route('map.selection.get_state', $panelmatch->room_code) }}";
-    const teamAActionUrl = "{{ route('map.selection.team_a_action', $panelmatch->room_code) }}";
-    const teamBActionUrl = "{{ route('map.selection.team_b_action', $panelmatch->room_code) }}";
+        const timerElement = document.getElementById('timer');
+        const phaseTitle = document.getElementById('phase-title');
+        const turnIndicator = document.getElementById('turn-indicator');
+        const teamAPanel = document.getElementById('team-a-panel');
+        const teamBPanel = document.getElementById('team-b-panel');
+        const teamABans = document.getElementById('team-a-bans');
+        const teamBBans = document.getElementById('team-b-bans');
+        const teamAPick = document.getElementById('team-a-pick');
+        const teamBPick = document.getElementById('team-b-pick');
+        const mapCards = document.querySelectorAll('.map-card');
+        const mapPool = document.getElementById('map-pool');
+        
+        const myTeam = "{{ $myTeam ?? '' }}";
+        const teamAName = "{{ $panelmatch->teamA->name }}";
+        const teamBName = "{{ $panelmatch->teamB->name }}";
+        const getStateUrl = "{{ route('map.selection.get_state', $panelmatch->room_code) }}";
+        const teamAActionUrl = "{{ route('map.selection.team_a_action', $panelmatch->room_code) }}";
+        const teamBActionUrl = "{{ route('map.selection.team_b_action', $panelmatch->room_code) }}";
 
-    const updateVisualTimer = (turnStartTime) => {
-        if (visualTimerInterval) clearInterval(visualTimerInterval);
-        timerElement.style.display = 'block';
-
-        visualTimerInterval = setInterval(() => {
-            const now = Math.floor(Date.now() / 1000);
-            const elapsed = now - turnStartTime;
-            const remaining = 30 - elapsed;
-            
-            if (remaining >= 0) {
-                timerElement.textContent = remaining;
-            } else {
-                timerElement.textContent = "0";
-                clearInterval(visualTimerInterval);
+        const disallowed = new Set(['Knife Edge', 'Shafted']);
+        document.querySelectorAll('#map-pool .map-card').forEach(card => {
+            if (disallowed.has(card.dataset.mapName)) {
+            card.remove();
             }
-        }, 500);
-    };
-
-    const updateUI = (state) => {
-        if (state.phase === 'waiting') {
-            phaseTitle.textContent = 'WAITING OPERATOR';
-            phaseTitle.className = "text-5xl md:text-6xl font-bold tracking-wider uppercase transition-colors duration-300 text-gray-400";
-            turnIndicator.textContent = 'The ban/pick process will begin soon...';
-            timerElement.style.display = 'none';
-            mapPool.classList.add('disabled-pool');
-            teamAPanel.classList.remove('active');
-            teamBPanel.classList.remove('active');
-            return;
-        }
-
-        mapCards.forEach(card => card.classList.remove('is-banned', 'is-picked'));
-        
-        teamABans.innerHTML = '';
-        teamBBans.innerHTML = '';
-        
-        state.team_a_bans.forEach(mapName => {
-            const card = document.querySelector(`.map-card[data-map-name="${mapName}"]`);
-            if (card) card.classList.add('is-banned');
-            teamABans.innerHTML += `<div>${mapName}</div>`;
-        });
-        state.team_b_bans.forEach(mapName => {
-            const card = document.querySelector(`.map-card[data-map-name="${mapName}"]`);
-            if (card) card.classList.add('is-banned');
-            teamBBans.innerHTML += `<div>${mapName}</div>`;
         });
 
-        teamAPick.textContent = state.team_a_pick || '';
-        if (state.team_a_pick) {
-            const card = document.querySelector(`.map-card[data-map-name="${state.team_a_pick}"]`);
-            if (card) card.classList.add('is-picked');
-        }
-        teamBPick.textContent = state.team_b_pick || '';
-        if (state.team_b_pick) {
-            const card = document.querySelector(`.map-card[data-map-name="${state.team_b_pick}"]`);
-            if (card) card.classList.add('is-picked');
-        }
+        const pool = document.getElementById('map-pool');
+        pool.classList.remove('md:grid-cols-4');
+        pool.classList.add('md:grid-cols-3');
 
-        if (state.phase === 'end') {
-            phaseTitle.textContent = "SELECTION COMPLETED";
-            phaseTitle.className = "text-5xl md:text-6xl font-bold tracking-wider uppercase transition-colors duration-300 text-yellow-400";
-            turnIndicator.textContent = "Map telah ditentukan!";
+        const updateVisualTimer = (turnStartTime) => {
             if (visualTimerInterval) clearInterval(visualTimerInterval);
-            timerElement.style.display = 'none';
-            if (pollingInterval) clearInterval(pollingInterval);
-            mapPool.classList.remove('disabled-pool');
-            return;
-        }
+            timerElement.style.display = 'block';
 
-        const isPickPhase = state.phase === 'pick';
-        phaseTitle.textContent = isPickPhase ? "FASE PICK" : "FASE BAN";
-        phaseTitle.className = `text-5xl md:text-6xl font-bold tracking-wider uppercase transition-colors duration-300 ${isPickPhase ? 'text-green-500' : 'text-red-500'}`;
-        
-        document.querySelectorAll('.action-button').forEach(button => {
-            button.textContent = isPickPhase ? "CHOOSE MAP" : "BAN MAP";
-            const buttonClasses = isPickPhase ? 'bg-green-600 hover:bg-green-500' : 'bg-red-600 hover:bg-red-500';
-            button.className = `action-button ${buttonClasses}`;
-        });
+            visualTimerInterval = setInterval(() => {
+                const now = Math.floor(Date.now() / 1000);
+                const elapsed = now - turnStartTime;
+                const remaining = 30 - elapsed;
+                
+                if (remaining >= 0) {
+                    timerElement.textContent = remaining;
+                } else {
+                    timerElement.textContent = "0";
+                    clearInterval(visualTimerInterval);
+                }
+            }, 500);
+        };
 
-        const teamName = state.turn === 'A' ? teamAName : teamBName;
-        const action = state.phase === 'ban' ? 'BAN' : 'PICK';
-        turnIndicator.textContent = `${teamName} turn for ${action}`;
-        teamAPanel.classList.toggle('active', state.turn === 'A');
-        teamBPanel.classList.toggle('active', state.turn === 'B');
-        updateVisualTimer(state.turn_starts_at);
-
-        if (myTeam && state.phase !== 'end') {
-            if (state.turn !== myTeam) {
+        const updateUI = (state) => {
+            if (state.phase === 'waiting') {
+                phaseTitle.textContent = 'WAITING OPERATOR';
+                phaseTitle.className = "text-5xl md:text-6xl font-bold tracking-wider uppercase transition-colors duration-300 text-gray-400";
+                turnIndicator.textContent = 'The ban/pick process will begin soon...';
+                timerElement.style.display = 'none';
                 mapPool.classList.add('disabled-pool');
-            } else {
-                mapPool.classList.remove('disabled-pool');
-            }
-        }
-    };
-
-    const pollServer = async () => {
-        try {
-            const response = await fetch(getStateUrl);
-            if (!response.ok) throw new Error(`Server responded with ${response.status}`);
-            const serverState = await response.json();
-            if (serverState && serverState.last_update > localState.last_update) {
-                localState = serverState;
-                updateUI(serverState);
-            }
-        } catch (error) {
-            console.error('Polling error:', error);
-            if (pollingInterval) clearInterval(pollingInterval);
-        }
-    };
-
-    const sendAction = async (mapName) => {
-        const currentTurn = localState.turn;
-        if (!currentTurn) {
-            alert("Please wait a moment, synchronizing data with the server...");
-            return;
-        }
-        if (myTeam !== currentTurn) {
-            alert(`Can't choose, now it's the opposing team's turn!`);
-            return;
-        }
-        const actionUrl = (currentTurn === 'A') ? teamAActionUrl : teamBActionUrl;
-        try {
-            const response = await fetch(actionUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                },
-                body: JSON.stringify({ mapName: mapName })
-            });
-            const newState = await response.json();
-            if (response.ok) {
-                localState = newState;
-                updateUI(newState);
-            } else {
-                alert(`Action Failed: ${newState.message}`);
-            }
-        } catch (error) {
-            console.error('Failed to send action:', error);
-        }
-    };
-
-    mapCards.forEach(card => {
-        card.addEventListener('click', () => {
-            if (card.classList.contains('is-banned') || card.classList.contains('is-picked') || (localState && localState.phase === 'end')) {
+                teamAPanel.classList.remove('active');
+                teamBPanel.classList.remove('active');
                 return;
             }
-            const mapName = card.dataset.mapName;
-            sendAction(mapName);
-        });
-    });
 
-    pollServer();
-    pollingInterval = setInterval(pollServer, 2000);
-});
+            mapCards.forEach(card => card.classList.remove('is-banned', 'is-picked'));
+            
+            teamABans.innerHTML = '';
+            teamBBans.innerHTML = '';
+            
+            state.team_a_bans.forEach(mapName => {
+                const card = document.querySelector(`.map-card[data-map-name="${mapName}"]`);
+                if (card) card.classList.add('is-banned');
+                teamABans.innerHTML += `<div>${mapName}</div>`;
+            });
+            state.team_b_bans.forEach(mapName => {
+                const card = document.querySelector(`.map-card[data-map-name="${mapName}"]`);
+                if (card) card.classList.add('is-banned');
+                teamBBans.innerHTML += `<div>${mapName}</div>`;
+            });
+
+            teamAPick.textContent = state.team_a_pick || '';
+            if (state.team_a_pick) {
+                const card = document.querySelector(`.map-card[data-map-name="${state.team_a_pick}"]`);
+                if (card) card.classList.add('is-picked');
+            }
+            teamBPick.textContent = state.team_b_pick || '';
+            if (state.team_b_pick) {
+                const card = document.querySelector(`.map-card[data-map-name="${state.team_b_pick}"]`);
+                if (card) card.classList.add('is-picked');
+            }
+
+            if (state.phase === 'end') {
+                phaseTitle.textContent = "SELECTION COMPLETED";
+                phaseTitle.className = "text-5xl md:text-6xl font-bold tracking-wider uppercase transition-colors duration-300 text-yellow-400";
+                turnIndicator.textContent = "Map telah ditentukan!";
+                if (visualTimerInterval) clearInterval(visualTimerInterval);
+                timerElement.style.display = 'none';
+                if (pollingInterval) clearInterval(pollingInterval);
+                mapPool.classList.remove('disabled-pool');
+                return;
+            }
+
+            const isPickPhase = state.phase === 'pick';
+            phaseTitle.textContent = isPickPhase ? "FASE PICK" : "FASE BAN";
+            phaseTitle.className = `text-5xl md:text-6xl font-bold tracking-wider uppercase transition-colors duration-300 ${isPickPhase ? 'text-green-500' : 'text-red-500'}`;
+            
+            document.querySelectorAll('.action-button').forEach(button => {
+                button.textContent = isPickPhase ? "CHOOSE MAP" : "BAN MAP";
+                const buttonClasses = isPickPhase ? 'bg-green-600 hover:bg-green-500' : 'bg-red-600 hover:bg-red-500';
+                button.className = `action-button ${buttonClasses}`;
+            });
+
+            const teamName = state.turn === 'A' ? teamAName : teamBName;
+            const action = state.phase === 'ban' ? 'BAN' : 'PICK';
+            turnIndicator.textContent = `${teamName} turn for ${action}`;
+            teamAPanel.classList.toggle('active', state.turn === 'A');
+            teamBPanel.classList.toggle('active', state.turn === 'B');
+            updateVisualTimer(state.turn_starts_at);
+
+            if (myTeam && state.phase !== 'end') {
+                if (state.turn !== myTeam) {
+                    mapPool.classList.add('disabled-pool');
+                } else {
+                    mapPool.classList.remove('disabled-pool');
+                }
+            }
+        };
+
+        const pollServer = async () => {
+            try {
+                const response = await fetch(getStateUrl);
+                if (!response.ok) throw new Error(`Server responded with ${response.status}`);
+                const serverState = await response.json();
+                if (serverState && serverState.last_update > localState.last_update) {
+                    localState = serverState;
+                    updateUI(serverState);
+                }
+            } catch (error) {
+                console.error('Polling error:', error);
+                if (pollingInterval) clearInterval(pollingInterval);
+            }
+        };
+
+        const sendAction = async (mapName) => {
+            const currentTurn = localState.turn;
+            if (!currentTurn) {
+                alert("Please wait a moment, synchronizing data with the server...");
+                return;
+            }
+            if (myTeam !== currentTurn) {
+                alert(`Can't choose, now it's the opposing team's turn!`);
+                return;
+            }
+            
+            const actionUrl = (currentTurn === 'A') ? teamAActionUrl : teamBActionUrl;
+            try {
+                const response = await fetch(actionUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({ mapName: mapName })
+                });
+                const newState = await response.json();
+                if (response.ok) {
+                    localState = newState;
+                    updateUI(newState);
+                } else {
+                    alert(`Action Failed: ${newState.message}`);
+                }
+            } catch (error) {
+                console.error('Failed to send action:', error);
+            }
+        };
+
+        mapCards.forEach(card => {
+            card.addEventListener('click', () => {
+                if (card.classList.contains('is-banned') || card.classList.contains('is-picked') || (localState && localState.phase === 'end')) {
+                    return;
+                }
+                const mapName = card.dataset.mapName;
+                sendAction(mapName);
+            });
+        });
+
+        pollServer();
+        pollingInterval = setInterval(pollServer, 2000);
+    });
 </script>
 </body>
 </html>

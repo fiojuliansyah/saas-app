@@ -213,12 +213,12 @@
         const maps = [
             { name: 'CyClone', image: '/huds/delta-force-v1/assets/maps/cyclone.png' },
             { name: 'Train Wreck', image: '/huds/delta-force-v1/assets/maps/train.png' },
-            { name: 'Knife Edge', image: '/huds/delta-force-v1/assets/maps/knife.png' },
+            // { name: 'Knife Edge', image: '/huds/delta-force-v1/assets/maps/knife.png' },
             { name: 'Threshold', image: '/huds/delta-force-v1/assets/maps/threshold.png' },
             { name: 'Ascension', image: '/huds/delta-force-v1/assets/maps/ascension.png' },
             { name: 'Cracked', image: '/huds/delta-force-v1/assets/maps/cracked.png' },
             { name: 'Trench Lines', image: '/huds/delta-force-v1/assets/maps/trench-lines.png' },
-            { name: 'Shafted', image: '/huds/delta-force-v1/assets/maps/shafted.jpg' },
+            // { name: 'Shafted', image: '/huds/delta-force-v1/assets/maps/shafted.jpg' },
         ];
 
         // Buat kartu map di HTML
