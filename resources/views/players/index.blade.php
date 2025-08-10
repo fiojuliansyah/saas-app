@@ -99,7 +99,6 @@
             <label class="form-label">Country</label>
             <input type="text" name="country" class="form-control">
           </div>
-          </div>
           <div class="mb-3">
             <label class="form-label">Squad Name</label>
             <input type="text" name="squad" class="form-control">
@@ -108,7 +107,6 @@
             <label class="form-label">Role</label>
             <input type="text" name="role" class="form-control">
           </div>
-
         </div>
         <div class="modal-footer">
           <button type="submit" class="btn btn-sm round btn-info">Create</button>

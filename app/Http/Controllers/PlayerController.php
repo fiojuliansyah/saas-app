@@ -54,7 +54,7 @@ class PlayerController extends Controller
 
         Player::create([
             'tenant_id' => $tenantUser,
-            'slug' => Str::slug($request->name),
+            'slug' => Str::slug($request->nickname),
             'tenant_id' => Auth::user()->tenant_id ?? 'default',
             'team_id' => $request->team_id,
             'avatar' => $avatarPath,
@@ -91,6 +91,7 @@ class PlayerController extends Controller
             'team_id' => $request->team_id,
             'name' => strtoupper($request->name),
             'nickname' => $request->nickname,
+            'slug' => Str::slug($request->nickname),
             'country' => $request->country,
             'squad' => $request->squad,
             'role' => $request->role,
