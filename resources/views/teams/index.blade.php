@@ -50,6 +50,7 @@
                 <label for="file" class="form-label">Select File</label>
                 <input type="file" name="file" id="file" class="form-control mt-2">
           </div>
+          <a href="/assets/team-import-template.xlsx">Download Example</a>
         </div>
         <div class="modal-footer">
           <button type="submit" class="btn btn-primary">Import</button>
