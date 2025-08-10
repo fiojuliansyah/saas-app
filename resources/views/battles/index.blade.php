@@ -33,7 +33,6 @@
     </div>
 </div>
 
-<!-- Modal: Create Match -->
 <div class="modal fade" id="createMatchModal" tabindex="-1" aria-labelledby="createMatchModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <form method="POST" action="{{ route('matches.store') }}" enctype="multipart/form-data">

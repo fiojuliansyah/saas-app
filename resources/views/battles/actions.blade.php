@@ -50,7 +50,7 @@
             </div>
             <div class="mb-3">
                 <label class="form-label">MATCH TIME</label>
-                <input type="date" name="match_date" value="{{ $row->match_time }}" class="form-control" required>
+                <input type="time" name="match_time" value="{{ $row->match_time }}" class="form-control" required>
             </div>
             </div>
             <div class="modal-footer">

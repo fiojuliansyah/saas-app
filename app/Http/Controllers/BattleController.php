@@ -25,7 +25,7 @@ class BattleController extends Controller
             'score_team_a' => 'nullable|integer',
             'score_team_b' => 'nullable|integer',
             'match_date' => 'required|date',
-            'match_time' => 'required|date',
+            'match_time' => 'required',
         ]);
 
         $tenantUser = Auth::user()->tenant_id;
@@ -46,7 +46,7 @@ class BattleController extends Controller
         return redirect()->back()->with('success', 'Battle created');
     }
 
-    public function update(Request $request, Battle $battle)
+    public function update(Request $request, Battle $match)
     {
         $request->validate([
             'team_a_id' => 'required|different:team_b_id',
@@ -54,10 +54,10 @@ class BattleController extends Controller
             'score_team_a' => 'nullable|integer',
             'score_team_b' => 'nullable|integer',
             'match_date' => 'required|date',
-            'match_time' => 'required|date',
+            'match_time' => 'required',
         ]);
 
-        $battle->update([
+        $match->update([
             'team_a_id' => $request->team_a_id,
             'team_b_id' => $request->team_b_id,
             'score_team_a' => $request->score_team_a,
@@ -69,9 +69,9 @@ class BattleController extends Controller
         return redirect()->back()->with('success', 'Battle updated successfully');
     }
 
-    public function destroy(Battle $battle)
+    public function destroy(Battle $match)
     {
-        $battle->delete();
+        $match->delete();
 
         return redirect()->back()->with('success', 'Battle deleted successfully');
     }
