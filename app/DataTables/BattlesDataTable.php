@@ -56,7 +56,10 @@ class BattlesDataTable extends DataTable
             })
 
             ->addColumn('match_date', function ($row) {
-                return \Carbon\Carbon::parse($row->match_datetime)->format('d M Y, H:i');
+                return \Carbon\Carbon::parse($row->match_date)->format('d M Y');
+            })
+            ->addColumn('match_time', function ($row) {
+                return \Carbon\Carbon::parse($row->match_time)->format('H:i');
             })
             ->addColumn('action', function ($row) {
                 $teams = Team::all();
@@ -108,6 +111,7 @@ class BattlesDataTable extends DataTable
             Column::make('match'),
             Column::make('score'),
             Column::make('match_date'),
+            Column::make('match_time'),
             Column::computed('action')
             ->exportable(false)
             ->printable(false)

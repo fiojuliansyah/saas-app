@@ -15,14 +15,13 @@ class Battle extends Model
         'team_b_id',
         'score_team_a',
         'score_team_b',
-        'match_datetime',
+        'match_date',
+        'match_time',
         'room_code',
         'map_a',
         'map_b',
         'map_decider'
     ];
-
-    protected $dates = ['match_datetime'];
 
     public function teamA()
     {

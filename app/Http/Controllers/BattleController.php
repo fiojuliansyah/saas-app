@@ -24,7 +24,8 @@ class BattleController extends Controller
             'team_b_id' => 'required',
             'score_team_a' => 'nullable|integer',
             'score_team_b' => 'nullable|integer',
-            'match_datetime' => 'required|date',
+            'match_date' => 'required|date',
+            'match_time' => 'required|date',
         ]);
 
         $tenantUser = Auth::user()->tenant_id;
@@ -37,7 +38,8 @@ class BattleController extends Controller
             'team_b_id' => $request->team_b_id,
             'score_team_a' => $request->score_team_a,
             'score_team_b' => $request->score_team_b,
-            'match_datetime' => $request->match_datetime,
+            'match_date' => $request->match_date,
+            'match_time' => $request->match_time,
             'room_code' => $room_code, 
         ]);
 
@@ -51,7 +53,8 @@ class BattleController extends Controller
             'team_b_id' => 'required',
             'score_team_a' => 'nullable|integer',
             'score_team_b' => 'nullable|integer',
-            'match_datetime' => 'required|date',
+            'match_date' => 'required|date',
+            'match_time' => 'required|date',
         ]);
 
         $battle->update([
@@ -59,7 +62,8 @@ class BattleController extends Controller
             'team_b_id' => $request->team_b_id,
             'score_team_a' => $request->score_team_a,
             'score_team_b' => $request->score_team_b,
-            'match_datetime' => $request->match_datetime,
+            'match_date' => $request->match_date,
+            'match_time' => $request->match_time,
         ]);
 
         return redirect()->back()->with('success', 'Battle updated successfully');

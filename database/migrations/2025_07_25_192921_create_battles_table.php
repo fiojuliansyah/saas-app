@@ -22,7 +22,8 @@ return new class extends Migration
             $table->integer('score_team_b')->nullable();
             $table->string('map_b')->nullable();
             $table->string('map_decider')->nullable();
-            $table->timestamp('match_datetime');
+            $table->timestamp('match_date');
+            $table->timestamp('match_time');
             $table->timestamps();
         });
     }
