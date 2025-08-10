@@ -65,7 +65,7 @@ class BattlesDataTable extends DataTable
                 $teams = Team::all();
                 return view('battles.actions', compact('row','teams'))->render();
             })
-            ->rawColumns(['action','match','score','match_date'])
+            ->rawColumns(['action','match','score','match_date','match_time'])
             ->setRowId('id');
     }
 
