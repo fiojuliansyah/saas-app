@@ -197,20 +197,30 @@
                 <h3 class="col-title">RULES</h3>
                 <div class="info-panel">
                     <div class="title">Win Condition</div>
-                    <div class="detail">First to win 2 Maps</div>
+                    <div class="detail">{{ $format->win_condition ?? 'First to Win 2 Maps' }}</div>
                 </div>
                 <div class="info-panel">
                     <div class="title">Game Mode</div>
-                    <div class="detail">Victory Unite</div>
+                    <div class="detail">{{ $format->game_mode ?? 'Attack / Defend' }}</div>
                 </div>
-                <div class="info-panel">
-                    <div class="title">Game 1</div>
-                    <div class="description">Map and side are randomly selected</div>
-                </div>
+                @if ($format->game_1)
+                    <div class="info-panel">
+                        <div class="title">Game 1</div>
+                        <div class="description">{{ $format->game_1 }}</div>
+                    </div>
+                @endif
+                @if ($format->game_2)
                  <div class="info-panel">
                     <div class="title">Game 2</div>
-                    <div class="description">Sides Swap</div>
+                    <div class="description">{{ $format->game_2 }}</div>
                 </div>
+                @endif
+                @if ($format->game_3)
+                 <div class="info-panel">
+                    <div class="title">Game 3</div>
+                    <div class="description">{{ $format->game_3 }}</div>
+                </div>
+                @endif
             </div>
 
             <div class="format-col map-pool-col" style="animation-delay: 0.6s;">
