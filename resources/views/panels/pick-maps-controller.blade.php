@@ -77,6 +77,7 @@
         <h3 class="text-center text-2xl text-gray-400 font-bold tracking-widest mb-4">SPONSORED BY</h3>
         <div class="flex justify-center items-center gap-x-8 md:gap-x-12">
             <img src="/huds/delta-force-v1/assets/gihud-sponsor.png" alt="Sponsor 1" class="max-h-14 transition-transform hover:scale-110 filter grayscale brightness-0 invert">
+            <img src="/huds/delta-force-v1/assets/delta-force.png" alt="Sponsor 1" class="max-h-14 transition-transform hover:scale-110 filter grayscale brightness-0 invert">
             <img src="/huds/delta-force-v1/assets/sponsor.png" alt="Sponsor 2" class="max-h-14 transition-transform hover:scale-110 filter grayscale brightness-0 invert">
             <img src="/huds/delta-force-v1/assets/garena.png" alt="Sponsor 2" class="max-h-12 transition-transform hover:scale-110 filter grayscale brightness-0 invert">
             <img src="/huds/delta-force-v1/assets/dfcid.png" alt="Sponsor 2" class="max-h-14 transition-transform hover:scale-110 filter grayscale brightness-0 invert">

@@ -170,7 +170,7 @@
             text-transform: uppercase;
         }
         .sponsor-logo {
-            max-height: 60px;
+            max-height: 30px;
             margin-top: 0.5rem;
         }
 
@@ -213,7 +213,10 @@
             </div>
             <div class="sponsor-container">
                 <p class="sponsor-title">Didukung oleh:</p>
-                <img src="/huds/delta-force-v1/assets/gihud.png" alt="Sponsor Logo" class="sponsor-logo">
+                <img src="/huds/delta-force-v1/assets/gihud-sponsor.png" alt="Sponsor 1" class="sponsor-logo">
+                <img src="/huds/delta-force-v1/assets/sponsor.png" alt="Sponsor 2" class="sponsor-logo">
+                <img src="/huds/delta-force-v1/assets/garena.png" alt="Sponsor 2" class="sponsor-logo">
+                <img src="/huds/delta-force-v1/assets/dfcid.png" alt="Sponsor 2" class="sponsor-logo">
             </div>
         </div>
         
@@ -225,7 +228,7 @@
     </div>
 
     <script>
-        const countDownDate = new Date("Jul 27, 2025 20:00:00").getTime();
+        const countDownDate = new Date("{{ $covermatch->match_date }} {{ $covermatch->match_time }}").getTime();
 
         const x = setInterval(function() {
             const now = new Date().getTime();

@@ -218,9 +218,9 @@
                 <div class="map-card" style="background-image: url('/huds/delta-force-v1/assets/maps/ascension.png');">
                     <div class="map-name">Ascension</div>
                 </div>
-                <div class="map-card" style="background-image: url('/huds/delta-force-v1/assets/maps/shafted.jpg');">
+                {{-- <div class="map-card" style="background-image: url('/huds/delta-force-v1/assets/maps/shafted.jpg');">
                     <div class="map-name">Shafted</div>
-                </div>
+                </div> --}}
                 <div class="map-card" style="background-image: url('/huds/delta-force-v1/assets/maps/cracked.png');">
                     <div class="map-name">Cracked</div>
                 </div>
@@ -233,9 +233,9 @@
                 <div class="map-card" style="background-image: url('/huds/delta-force-v1/assets/maps/trench-lines.png');">
                     <div class="map-name">Trench Lines</div>
                 </div>
-                <div class="map-card" style="background-image: url('/huds/delta-force-v1/assets/maps/knife.png');">
+                {{-- <div class="map-card" style="background-image: url('/huds/delta-force-v1/assets/maps/knife.png');">
                     <div class="map-name">Knife Edge</div>
-                </div>
+                </div> --}}
                 <div class="map-card" style="background-image: url('/huds/delta-force-v1/assets/maps/cyclone.png');">
                     <div class="map-name">CyClone</div>
                 </div>

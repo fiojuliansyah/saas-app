@@ -384,11 +384,17 @@
         </div>
     </main>
 
-    <footer class="page-footer">
-        <div class="marquee"><span>• GIHUB.GG •</span><span>• GIHUB.GG •</span><span>• GIHUB.GG •</span><span>•
-                GIHUB.GG •</span><span>• GIHUB.GG •</span><span>• GIHUB.GG •</span><span>• GIHUB.GG •</span><span>•
-                GIHUB.GG •</span><span>• GIHUB.GG •</span><span>• GIHUB.GG •</span><span>• GIHUB.GG •</span><span>•
-                GIHUB.GG •</span></div>
+    <footer class="page-footer animate-on-load" style="animation-name: slideInUp;">
+        <div class="marquee flex items-center gap-8 overflow-hidden whitespace-nowrap">
+            <span class="inline-flex items-center"><img src="/huds/delta-force-v1/assets/gihud-sponsor.png" alt="Sponsor 1" class="max-h-10 filter grayscale brightness-0 invert"></span>
+            <span class="inline-flex items-center"><img src="/huds/delta-force-v1/assets/sponsor.png" alt="Sponsor 1" class="max-h-10 filter grayscale brightness-0 invert"></span>
+            <span class="inline-flex items-center"><img src="/huds/delta-force-v1/assets/garena.png" alt="Sponsor 1" class="max-h-10 filter grayscale brightness-0 invert"></span>
+            <span class="inline-flex items-center"><img src="/huds/delta-force-v1/assets/dfcid.png" alt="Sponsor 1" class="max-h-10 filter grayscale brightness-0 invert"></span>
+            <span class="inline-flex items-center"><img src="/huds/delta-force-v1/assets/gihud-sponsor.png" alt="Sponsor 1" class="max-h-10 filter grayscale brightness-0 invert"></span>
+            <span class="inline-flex items-center"><img src="/huds/delta-force-v1/assets/sponsor.png" alt="Sponsor 1" class="max-h-10 filter grayscale brightness-0 invert"></span>
+            <span class="inline-flex items-center"><img src="/huds/delta-force-v1/assets/garena.png" alt="Sponsor 1" class="max-h-10 filter grayscale brightness-0 invert"></span>
+            <span class="inline-flex items-center"><img src="/huds/delta-force-v1/assets/dfcid.png" alt="Sponsor 1" class="max-h-10 filter grayscale brightness-0 invert"></span>
+        </div>
     </footer>
 
     <script>

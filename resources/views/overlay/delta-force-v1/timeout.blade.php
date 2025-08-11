@@ -128,9 +128,10 @@
     </main>
 
     <footer class="flex justify-around items-center py-5 px-10 relative z-10 h-[15vh]">
-        <div class="uppercase mt-12 start-hidden animate-slide-up delay-500">GIHUD.GG</div>
-        <div class="uppercase mt-12 start-hidden animate-slide-up delay-600">GIHUD.GG</div>
-        <div class="uppercase mt-12 start-hidden animate-slide-up delay-700">GIHUD.GG</div>
+        <span class="inline-flex items-center"><img src="/huds/delta-force-v1/assets/gihud-sponsor.png" alt="Sponsor 1" class="max-h-10 filter grayscale brightness-0 invert uppercase mt-12 start-hidden animate-slide-up delay-500"></span>
+        <span class="inline-flex items-center"><img src="/huds/delta-force-v1/assets/sponsor.png" alt="Sponsor 1" class="max-h-10 filter grayscale brightness-0 invert uppercase mt-12 start-hidden animate-slide-up delay-500"></span>
+        <span class="inline-flex items-center"><img src="/huds/delta-force-v1/assets/garena.png" alt="Sponsor 1" class="max-h-10 filter grayscale brightness-0 invert uppercase mt-12 start-hidden animate-slide-up delay-500"></span>
+        <span class="inline-flex items-center"><img src="/huds/delta-force-v1/assets/dfcid.png" alt="Sponsor 1" class="max-h-10 filter grayscale brightness-0 invert uppercase mt-12 start-hidden animate-slide-up delay-500"></span>
     </footer>
 
 <script>
