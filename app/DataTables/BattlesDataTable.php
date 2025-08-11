@@ -15,11 +15,6 @@ use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 
 class BattlesDataTable extends DataTable
 {
-    /**
-     * Build the DataTable class.
-     *
-     * @param QueryBuilder<Battle> $query Results from query() method.
-     */
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))

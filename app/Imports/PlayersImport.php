@@ -33,6 +33,15 @@ class PlayersImport implements ToModel, WithStartRow
             return null;
         }
 
+        $existingPlayer = Player::where('tenant_id', $this->tenantId)
+                                ->where('team_id', $teamId)
+                                ->where('name', $row[1])
+                                ->first();
+
+        if ($existingPlayer) {
+            return null; 
+        }
+
         return new Player([
             'tenant_id' => $this->tenantId,
             'team_id'   => $teamId,
@@ -48,15 +57,14 @@ class PlayersImport implements ToModel, WithStartRow
 
     private function getTeamId(string $name): ?int
     {
-        $teamNameUppercase = strtoupper($name);  // Convert incoming team name to uppercase
+        $teamNameUppercase = strtoupper($name);
 
         if (isset($this->teamCache[$teamNameUppercase])) {
             return $this->teamCache[$teamNameUppercase];
         }
 
-        // Retrieve the team, comparing both sides in uppercase
         $team = Team::where('tenant_id', $this->tenantId)
-                    ->whereRaw('UPPER(name) = ?', [strtoupper($teamNameUppercase)])  // Make sure team name is compared in uppercase
+                    ->whereRaw('UPPER(name) = ?', [strtoupper($teamNameUppercase)])
                     ->first();
 
         $this->teamCache[$teamNameUppercase] = $team ? $team->id : null;

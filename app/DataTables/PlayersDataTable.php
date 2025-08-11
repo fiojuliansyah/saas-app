@@ -13,11 +13,6 @@ use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 
 class PlayersDataTable extends DataTable
 {
-    /**
-     * Build the DataTable class.
-     *
-     * @param QueryBuilder<Player> $query Results from query() method.
-     */
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
@@ -38,19 +33,11 @@ class PlayersDataTable extends DataTable
             ->setRowId('id');
     }
 
-    /**
-     * Get the query source of dataTable.
-     *
-     * @return QueryBuilder<Player>
-     */
     public function query(Player $model): QueryBuilder
     {
         return $model->with(['team'])->newQuery()->where('tenant_id', auth()->user()->tenant_id);
     }
 
-    /**
-     * Optional method if you want to use the html builder.
-     */
     public function html(): HtmlBuilder
     {
         return $this->builder()
@@ -69,9 +56,6 @@ class PlayersDataTable extends DataTable
                     ]);
     }
 
-    /**
-     * Get the dataTable columns definition.
-     */
     public function getColumns(): array
     {
         return [
@@ -90,9 +74,6 @@ class PlayersDataTable extends DataTable
         ];
     }
 
-    /**
-     * Get the filename for export.
-     */
     protected function filename(): string
     {
         return 'Players_' . date('YmdHis');

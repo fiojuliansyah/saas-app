@@ -60,8 +60,6 @@ class BattleController extends Controller
         $match->update([
             'team_a_id' => $request->team_a_id,
             'team_b_id' => $request->team_b_id,
-            'score_team_a' => $request->score_team_a,
-            'score_team_b' => $request->score_team_b,
             'match_date' => $request->match_date,
             'match_time' => $request->match_time,
         ]);
