@@ -37,8 +37,8 @@ class BattlesDataTable extends DataTable
                 $scoreB = $row->score_team_b ?? 0;
 
                 // badge markup
-                $badgeWin  = '<span class="mr-1" style="color: green;">Win</span>';
-                $badgeLose = '<span class="ml-1" style="color: red;">Lose</span>';
+                $badgeWin  = '<span class="mr-1" style="color: green;"> Win </span>';
+                $badgeLose = '<span class="ml-1" style="color: red;"> Lose </span>';
                 $badgeDraw = '';
 
                 if ($scoreA > $scoreB) {
